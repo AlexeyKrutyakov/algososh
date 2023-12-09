@@ -1,7 +1,7 @@
-import React from "react";
-import { ReturnButton } from "../return-button/return-button";
-import { Link } from "react-router-dom";
-import styles from "./solution-layout.module.css";
+import React from 'react';
+import { ReturnButton } from '../return-button/return-button';
+import { Link } from 'react-router-dom';
+import styles from './solution-layout.module.css';
 
 interface SolutionLayoutProps {
   title: string;
@@ -9,7 +9,7 @@ interface SolutionLayoutProps {
 }
 
 export const SolutionLayout: React.FC<SolutionLayoutProps> = ({
-  extraClass = "",
+  extraClass = '',
   title,
   children,
 }) => {

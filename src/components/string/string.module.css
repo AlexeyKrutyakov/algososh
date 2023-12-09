@@ -1,0 +1,12 @@
+.form {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.input {
+  max-width: 377px;
+}
+
+.button {
+}
