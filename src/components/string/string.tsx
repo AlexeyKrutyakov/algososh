@@ -9,10 +9,13 @@ import turnOverCircles from '../../utils/turnOverCircles';
 export const StringComponent: React.FC = () => {
   const [str, setStr] = useState('');
   const [circles, setCircles] = useState<CircleProps[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsLoading(true);
     await turnOverCircles(str, setCircles);
+    setIsLoading(false);
   };
 
   return (
@@ -29,7 +32,7 @@ export const StringComponent: React.FC = () => {
           extraClass={styles.input}
           onChange={event => setStr(event.currentTarget.value)}
         />
-        <Button text="Развернуть" type="submit" />
+        <Button isLoader={isLoading} text="Развернуть" type="submit" />
       </form>
       {circles.length > 0 && (
         <div className={styles.scheme}>
