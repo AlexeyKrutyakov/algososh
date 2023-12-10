@@ -1,37 +1,19 @@
 import styles from './string.module.css';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 import { Input } from '../ui/input/input';
 import { Button } from '../ui/button/button';
-import { ElementStates } from '../../types/element-states';
 import { Circle, CircleProps } from '../ui/circle/circle';
+import turnOverCircles from '../../utils/turnOverCircles';
 
 export const StringComponent: React.FC = () => {
+  const [str, setStr] = useState('');
   const [circles, setCircles] = useState<CircleProps[]>([]);
 
-  const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+  const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    const word = document.querySelector('input')?.value;
-    let letters: string[] = [];
-
-    if (word) letters = Array.from(word);
-
-    console.log(letters);
-
-    letters.map((letter, index) =>
-      setCircles(circles => [
-        ...circles,
-        {
-          letter,
-          index,
-          state: ElementStates.Default,
-        },
-      ])
-    );
+    await turnOverCircles(str, setCircles);
   };
-
-  useEffect(() => console.log('circles', circles), [circles]);
 
   return (
     <SolutionLayout title="Строка">
@@ -45,6 +27,7 @@ export const StringComponent: React.FC = () => {
           maxLength={11}
           isLimitText={true}
           extraClass={styles.input}
+          onChange={event => setStr(event.currentTarget.value)}
         />
         <Button text="Развернуть" type="submit" />
       </form>
