@@ -1,0 +1,33 @@
+.scheme {
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radio_buttons {
+  display: flex;
+  gap: 40px;
+}
+
+.buttons {
+  margin-left: 52px;
+  display: flex;
+  gap: 12px;
+}
+
+.sorting_columns {
+  height: 340px;
+  margin-top: 48px;
+  display: flex;
+  gap: 10px;
+  align-items: end;
+  justify-content: center;
+}
+
+.new_array_button {
+  width: 205px;
+  margin-left: 68px;
+}
