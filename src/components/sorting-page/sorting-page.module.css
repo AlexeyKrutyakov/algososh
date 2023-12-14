@@ -27,7 +27,10 @@
   justify-content: center;
 }
 
+.button {
+  min-width: 208px;
+}
+
 .new_array_button {
-  width: 205px;
   margin-left: 68px;
 }
