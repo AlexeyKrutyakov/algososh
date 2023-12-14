@@ -8,36 +8,34 @@ import { delay } from '../../utils/delay';
 import { Column } from '../ui/column/column';
 import { DELAY_IN_MS, SHORT_DELAY_IN_MS } from '../../constants/delays';
 import createRandomArr from '../../utils/createRandomArr';
+import sortBySelection from '../../utils/sortBySelection';
 
 export const SortingPage: React.FC = () => {
   const [isDisabled, setIsDisabled] = useState(false);
   const [isBubbleTypeActive, setIsBubbleTypeActive] = useState(false);
   const [isAscendSortingRunning, setIsAscendSortingRunning] = useState(false);
   const [isDescendSortingRunning, setIsDescendSortingRunning] = useState(false);
+  const [numbers, setNumbers] = useState<number[]>(
+    createRandomArr(3, 17, 1, 100)
+  );
 
   const handleRadioChange = () => {
     setIsBubbleTypeActive(!isBubbleTypeActive);
   };
 
-  const handleAscendClick = async () => {
-    setIsAscendSortingRunning(true);
+  const handleSortClick = async (direction: Direction) => {
+    if (direction === Direction.Ascending) setIsAscendSortingRunning(true);
+    if (direction === Direction.Descending) setIsDescendSortingRunning(true);
     setIsDisabled(true);
-    await delay(DELAY_IN_MS);
-    setIsAscendSortingRunning(false);
-    setIsDisabled(false);
-  };
-
-  const handleDescendClick = async () => {
-    setIsDescendSortingRunning(true);
-    setIsDisabled(true);
-    await delay(DELAY_IN_MS);
-    setIsDescendSortingRunning(false);
+    const arr = numbers;
+    await sortBySelection(arr, setNumbers, direction);
+    if (direction === Direction.Ascending) setIsAscendSortingRunning(false);
+    if (direction === Direction.Descending) setIsDescendSortingRunning(false);
     setIsDisabled(false);
   };
 
   const handleNewArrayClick = () => {
-    const newArray = createRandomArr(3, 17, 1, 100);
-    console.log(newArray);
+    setNumbers(createRandomArr(3, 17, 1, 100));
   };
 
   const wait = async () => {
@@ -74,7 +72,7 @@ export const SortingPage: React.FC = () => {
             extraClass={styles.button}
             disabled={isDisabled}
             isLoader={isAscendSortingRunning}
-            onClick={handleAscendClick}
+            onClick={() => handleSortClick(Direction.Ascending)}
           />
           <Button
             text={`По убыванию`}
@@ -82,7 +80,7 @@ export const SortingPage: React.FC = () => {
             extraClass={styles.button}
             disabled={isDisabled}
             isLoader={isDescendSortingRunning}
-            onClick={handleDescendClick}
+            onClick={() => handleSortClick(Direction.Descending)}
           />
           <Button
             text={`Новый массив`}
@@ -93,11 +91,9 @@ export const SortingPage: React.FC = () => {
         </div>
       </nav>
       <div className={styles.sorting_columns}>
-        <Column index={2} />
-        <Column index={34} />
-        <Column index={17} />
-        <Column index={100} />
-        <Column index={50} />
+        {numbers.map((number, index) => (
+          <Column index={number} key={index} />
+        ))}
       </div>
     </SolutionLayout>
   );
