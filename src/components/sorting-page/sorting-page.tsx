@@ -10,6 +10,7 @@ import { SHORT_DELAY_IN_MS } from '../../constants/delays';
 import createRandomArr from '../../utils/createRandomArr';
 import sortBySelection from '../../utils/sortBySelection';
 import { ElementStates } from '../../types/element-states';
+import sortByBubble from '../../utils/sortByBubble';
 
 export const SortingPage: React.FC = () => {
   const [isDisabled, setIsDisabled] = useState(false);
@@ -41,7 +42,9 @@ export const SortingPage: React.FC = () => {
     if (direction === Direction.Descending) setIsDescendSortingRunning(true);
     setIsDisabled(true);
 
-    await sortBySelection(columns, setColumns, direction);
+    !isBubbleTypeActive &&
+      (await sortBySelection(columns, setColumns, direction));
+    isBubbleTypeActive && (await sortByBubble(columns, setColumns, direction));
 
     if (direction === Direction.Ascending) setIsAscendSortingRunning(false);
     if (direction === Direction.Descending) setIsDescendSortingRunning(false);
