@@ -1,8 +1,8 @@
-import React from "react";
-import styles from "./column.module.css";
-import { ElementStates } from "../../../types/element-states";
+import React from 'react';
+import styles from './column.module.css';
+import { ElementStates } from '../../../types/element-states';
 
-interface ColumnProps {
+export interface ColumnProps {
   index: number;
   state?: ElementStates;
   extraClass?: string;
@@ -11,7 +11,7 @@ interface ColumnProps {
 export const Column: React.FC<ColumnProps> = ({
   index,
   state = ElementStates.Default,
-  extraClass = "",
+  extraClass = '',
 }) => (
   <div className={`${styles.content} ${extraClass}`}>
     <div

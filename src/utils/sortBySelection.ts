@@ -1,32 +1,41 @@
+import { ColumnProps } from '../components/ui/column/column';
 import { SHORT_DELAY_IN_MS } from '../constants/delays';
 import { Direction } from '../types/direction';
+import { ElementStates } from '../types/element-states';
 import { delay } from './delay';
 
 export default async function sortBySelection(
-  numbers: number[],
-  setNumbers: React.Dispatch<React.SetStateAction<any>>,
+  columns: ColumnProps[],
+  setColumns: React.Dispatch<React.SetStateAction<any>>,
   direction: Direction
 ): Promise<void> {
-  for (let i = 0; i < numbers.length; i++) {
+  for (let i = 0; i < columns.length; i++) {
     let minIndex = i;
-    let min = numbers[i];
+    let min = columns[i].index;
+    columns[i].state = ElementStates.Changing;
+    setColumns([...columns]);
 
-    for (let j = i + 1; j < numbers.length; j++) {
-      if (direction === Direction.Ascending) {
-      }
+    for (let j = i + 1; j < columns.length; j++) {
+      columns[j].state = ElementStates.Changing;
+      setColumns([...columns]);
       if (
-        (direction === Direction.Ascending && numbers[j] < min) ||
-        (direction === Direction.Descending && numbers[j] > min)
+        (direction === Direction.Ascending && columns[j].index < min) ||
+        (direction === Direction.Descending && columns[j].index > min)
       ) {
-        min = numbers[j];
+        min = columns[j].index;
         minIndex = j;
       }
+      await delay(SHORT_DELAY_IN_MS);
+      columns[j].state = ElementStates.Default;
+      setColumns([...columns]);
     }
-    await delay(SHORT_DELAY_IN_MS);
 
     if (minIndex !== i) {
-      [numbers[i], numbers[minIndex]] = [numbers[minIndex], numbers[i]];
-      setNumbers([...numbers]);
+      columns[i].state = ElementStates.Default;
+      [columns[i], columns[minIndex]] = [columns[minIndex], columns[i]];
+      setColumns([...columns]);
     }
+    columns[i].state = ElementStates.Modified;
+    setColumns([...columns]);
   }
 }

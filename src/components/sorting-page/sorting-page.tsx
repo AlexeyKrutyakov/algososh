@@ -5,10 +5,11 @@ import { RadioInput } from '../ui/radio-input/radio-input';
 import { Button } from '../ui/button/button';
 import { Direction } from '../../types/direction';
 import { delay } from '../../utils/delay';
-import { Column } from '../ui/column/column';
-import { DELAY_IN_MS, SHORT_DELAY_IN_MS } from '../../constants/delays';
+import { Column, ColumnProps } from '../ui/column/column';
+import { SHORT_DELAY_IN_MS } from '../../constants/delays';
 import createRandomArr from '../../utils/createRandomArr';
 import sortBySelection from '../../utils/sortBySelection';
+import { ElementStates } from '../../types/element-states';
 
 export const SortingPage: React.FC = () => {
   const [isDisabled, setIsDisabled] = useState(false);
@@ -18,6 +19,18 @@ export const SortingPage: React.FC = () => {
   const [numbers, setNumbers] = useState<number[]>(
     createRandomArr(3, 17, 1, 100)
   );
+  const [columns, setColumns] = useState<ColumnProps[]>([]);
+
+  const createDefaultColumns = (numbers: number[]): ColumnProps[] => {
+    const columns: ColumnProps[] = [];
+    for (let i = 0; i < numbers.length; i++) {
+      columns.push({
+        index: numbers[i],
+        state: ElementStates.Default,
+      });
+    }
+    return columns;
+  };
 
   const handleRadioChange = () => {
     setIsBubbleTypeActive(!isBubbleTypeActive);
@@ -27,8 +40,9 @@ export const SortingPage: React.FC = () => {
     if (direction === Direction.Ascending) setIsAscendSortingRunning(true);
     if (direction === Direction.Descending) setIsDescendSortingRunning(true);
     setIsDisabled(true);
-    const arr = numbers;
-    await sortBySelection(arr, setNumbers, direction);
+
+    await sortBySelection(columns, setColumns, direction);
+
     if (direction === Direction.Ascending) setIsAscendSortingRunning(false);
     if (direction === Direction.Descending) setIsDescendSortingRunning(false);
     setIsDisabled(false);
@@ -43,6 +57,11 @@ export const SortingPage: React.FC = () => {
     await delay(SHORT_DELAY_IN_MS);
     setIsDisabled(false);
   };
+
+  useEffect(() => {
+    setColumns(createDefaultColumns(numbers));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [numbers]);
 
   useEffect(() => {
     wait();
@@ -91,8 +110,8 @@ export const SortingPage: React.FC = () => {
         </div>
       </nav>
       <div className={styles.sorting_columns}>
-        {numbers.map((number, index) => (
-          <Column index={number} key={index} />
+        {columns.map((column, ind) => (
+          <Column index={column.index} key={ind} state={column.state} />
         ))}
       </div>
     </SolutionLayout>
