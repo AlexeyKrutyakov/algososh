@@ -18,6 +18,8 @@ export const StackPage: React.FC = () => {
   const [elements, setElements] = useState<CircleProps[]>([]);
 
   const addElement = async () => {
+    if (elements.length === 10) return;
+
     setIsAddingRunning(true);
     setIsDisabled(true);
 
