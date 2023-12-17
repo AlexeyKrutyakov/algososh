@@ -1,5 +1,5 @@
 import styles from './stack-page.module.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 import { Input } from '../ui/input/input';
 import { Button } from '../ui/button/button';
@@ -11,13 +11,13 @@ import { SHORT_DELAY_IN_MS } from '../../constants/delays';
 
 export const StackPage: React.FC = () => {
   const [isDisabled, setIsDisabled] = useState(false);
+  const [isAddingDisabled, setIsAddingDisabled] = useState(false);
   const [isAddingRunning, setIsAddingRunning] = useState(false);
   const [isDeletingRunning, setIsDeletingRunning] = useState(false);
   const [str, setStr] = useState<string>('');
   const [elements, setElements] = useState<CircleProps[]>([]);
 
   const addElement = async () => {
-    if (str === '') return;
     setIsAddingRunning(true);
     setIsDisabled(true);
 
@@ -36,8 +36,10 @@ export const StackPage: React.FC = () => {
   const deleteElement = async () => {
     if (elements.length === 0) return;
 
+    setStr('');
     setIsDeletingRunning(true);
     setIsDisabled(true);
+    setIsAddingDisabled(true);
 
     elements[elements.length - 1].state = ElementStates.Changing;
     setElements([...elements]);
@@ -51,9 +53,19 @@ export const StackPage: React.FC = () => {
   };
 
   const clear = async () => {
+    setStr('');
+    setIsAddingDisabled(true);
     if (elements.length === 0) return;
     setElements([]);
   };
+
+  useEffect(() => {
+    if (str === '') {
+      setIsAddingDisabled(true);
+    } else {
+      setIsAddingDisabled(false);
+    }
+  }, [str]);
 
   return (
     <SolutionLayout title="Стек">
@@ -70,7 +82,7 @@ export const StackPage: React.FC = () => {
           text="Добавить"
           onClick={addElement}
           isLoader={isAddingRunning}
-          disabled={isDisabled}
+          disabled={isAddingDisabled}
         />
         <Button
           text="Удалить"
