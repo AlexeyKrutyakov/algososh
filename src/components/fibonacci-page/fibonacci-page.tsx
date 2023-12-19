@@ -5,7 +5,7 @@ import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 import { Input } from '../ui/input/input';
 import { Button } from '../ui/button/button';
 import { Circle } from '../ui/circle/circle';
-import calculateFibonacciNumber from '../../utils/calculateFibonacciNumber';
+import calculateFibonacciNumber from '../../utils/calculate-fibonacci-number';
 import { ElementStates } from '../../types/element-states';
 import { delay } from '../../utils/delay';
 import { SHORT_DELAY_IN_MS } from '../../constants/delays';

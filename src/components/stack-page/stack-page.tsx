@@ -6,8 +6,8 @@ import { Button } from '../ui/button/button';
 import { Circle } from '../ui/circle/circle';
 import { CircleProps } from '../ui/circle/circle';
 import { ElementStates } from '../../types/element-states';
-import { delay } from '../../utils/delay';
 import { SHORT_DELAY_IN_MS } from '../../constants/delays';
+import { delay } from '../../utils';
 
 export const StackPage: React.FC = () => {
   const [isDisabled, setIsDisabled] = useState(false);

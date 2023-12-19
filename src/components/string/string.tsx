@@ -4,7 +4,7 @@ import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 import { Input } from '../ui/input/input';
 import { Button } from '../ui/button/button';
 import { Circle, CircleProps } from '../ui/circle/circle';
-import turnOverCircles from '../../utils/turnOverCircles';
+import turnOverCircles from '../../utils/turn-over-circles';
 
 export const StringComponent: React.FC = () => {
   const [str, setStr] = useState('');

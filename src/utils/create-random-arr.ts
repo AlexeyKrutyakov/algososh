@@ -1,4 +1,4 @@
-import getRandomValueFromRange from './getRandomValueFromRange';
+import getRandomValueFromRange from './get-random-value-in-range';
 
 export default function createRandomArr(
   minLength: number,

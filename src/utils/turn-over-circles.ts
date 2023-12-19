@@ -1,7 +1,7 @@
 import { CircleProps } from '../components/ui/circle/circle';
 import { DELAY_IN_MS } from '../constants/delays';
 import { ElementStates } from '../types/element-states';
-import setStateWithDelay from './setStateWithDelay';
+import setStateWithDelay from './set-state-with-delay';
 
 export default async function turnOverCircles(
   str: string,

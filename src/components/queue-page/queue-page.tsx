@@ -5,8 +5,13 @@ import { Input } from '../ui/input/input';
 import { Button } from '../ui/button/button';
 import { Circle, CircleProps } from '../ui/circle/circle';
 import { ElementStates } from '../../types/element-states';
-import { delay } from '../../utils/delay';
 import { SHORT_DELAY_IN_MS } from '../../constants/delays';
+import {
+  addToTail,
+  findMarkedElementIndex,
+  setElementStateWithDelay,
+} from '../../utils';
+import { removeFromHead } from '../../utils/head';
 
 export const QueuePage: React.FC = () => {
   const [isAddingDisabled, setIsAddingDisabled] = useState(false);
@@ -35,94 +40,91 @@ export const QueuePage: React.FC = () => {
     setIsClearingDisabled(true);
   };
 
-  const findMarkedElementIndex = (mark: string) => {
-    let markedElementIndex: number | null = null;
-
-    for (let i = 0; i < elements.length; i++) {
-      if (elements[i].head === mark || elements[i].tail === mark) {
-        markedElementIndex = i;
-      }
-    }
-    return markedElementIndex;
-  };
-
-  const animateElement = async (index: number): Promise<void> => {
-    await delay(SHORT_DELAY_IN_MS);
-    elements[index].state = ElementStates.Default;
-    setElements([...elements]);
-  };
-
   const enqueue = async () => {
-    const tailIndex = findMarkedElementIndex('tail');
+    const tailIndex = findMarkedElementIndex(elements, 'tail');
 
     if (tailIndex === elements.length - 1) return;
 
+    // block controls
     setIsAddingRunning(true);
-
     setIsAddingDisabled(true);
     setIsDeletingDisabled(true);
     setIsClearingDisabled(true);
 
     if (tailIndex === null) {
-      elements[0].letter = str;
-      elements[0].head = 'head';
-      elements[0].tail = 'tail';
-      elements[0].state = ElementStates.Changing;
-      setElements([...elements]);
-
-      animateElement(0);
+      await setElementStateWithDelay(
+        elements,
+        setElements,
+        0,
+        ElementStates.Changing,
+        0
+      );
+      await addToTail(str, elements, setElements, tailIndex);
+      await setElementStateWithDelay(
+        elements,
+        setElements,
+        0,
+        ElementStates.Default,
+        SHORT_DELAY_IN_MS
+      );
     } else {
-      elements[tailIndex].tail = '';
-      elements[tailIndex + 1].letter = str;
-      elements[tailIndex + 1].tail = 'tail';
-      elements[tailIndex + 1].state = ElementStates.Changing;
-      setElements([...elements]);
-
-      animateElement(tailIndex + 1);
+      await setElementStateWithDelay(
+        elements,
+        setElements,
+        tailIndex + 1,
+        ElementStates.Changing,
+        0
+      );
+      await addToTail(str, elements, setElements, tailIndex);
+      await setElementStateWithDelay(
+        elements,
+        setElements,
+        tailIndex + 1,
+        ElementStates.Default,
+        SHORT_DELAY_IN_MS
+      );
     }
+
     setStr('');
 
+    // unblock controls
     setIsAddingDisabled(false);
     setIsDeletingDisabled(false);
     setIsClearingDisabled(false);
-
     setIsAddingRunning(false);
   };
 
   const dequeue = async () => {
-    setIsDeletingRunning(true);
-
     setStr('');
 
+    // block controls
+    setIsDeletingRunning(true);
     setIsAddingDisabled(true);
     setIsDeletingDisabled(true);
     setIsClearingDisabled(true);
     setIsInputDisabled(true);
 
-    const tailIndex = findMarkedElementIndex('tail');
-    const headIndex = findMarkedElementIndex('head');
-    console.log('tailIndex', tailIndex);
-    console.log('headIndex', headIndex);
+    const tailIndex = findMarkedElementIndex(elements, 'tail');
+    const headIndex = findMarkedElementIndex(elements, 'head');
 
-    if (headIndex === null || tailIndex === null) {
-      console.log('!headIndex || !tailIndex');
-      return;
+    if (headIndex !== null) {
+      await setElementStateWithDelay(
+        elements,
+        setElements,
+        headIndex,
+        ElementStates.Changing,
+        0
+      );
+      await setElementStateWithDelay(
+        elements,
+        setElements,
+        headIndex,
+        ElementStates.Default,
+        SHORT_DELAY_IN_MS
+      );
+      await removeFromHead(elements, setElements, headIndex, tailIndex);
     }
-
-    elements[headIndex].state = ElementStates.Changing;
-
-    await delay(SHORT_DELAY_IN_MS);
-
-    if (headIndex === tailIndex) {
-      elements[headIndex].tail = '';
-    } else {
-      elements[headIndex].head = '';
-      elements[headIndex + 1].head = 'head';
-    }
-    elements[headIndex].letter = '';
-    elements[headIndex].state = ElementStates.Default;
-
-    setElements([...elements]);
+    // unblock
     setIsClearingDisabled(false);
     setIsDeletingRunning(false);
 

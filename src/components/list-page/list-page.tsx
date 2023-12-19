@@ -10,7 +10,7 @@ import { ElementStates } from '../../types/element-states';
 export const ListPage: React.FC = () => {
   return (
     <SolutionLayout title="Связный список">
-      <nav className={styles.controls_top}>
+      <form name="controls_value" className={styles.controls_value}>
         <Input
           extraClass={styles.input}
           placeholder="Введите значение"
@@ -26,12 +26,12 @@ export const ListPage: React.FC = () => {
         <Button extraClass={styles.button_top} text="Добавить в tail" />
         <Button extraClass={styles.button_top} text="Удалить из head" />
         <Button extraClass={styles.button_top} text="Удалить из tail" />
-      </nav>
-      <nav className={styles.controls_bot}>
+      </form>
+      <form name="controls_index" className={styles.controls_index}>
         <Input extraClass={styles.input} placeholder="Введите индекс" />
         <Button extraClass={styles.button_bot} text="Добавить по индексу" />
         <Button extraClass={styles.button_bot} text="Удалить по индексу" />
-      </nav>
+      </form>
       <div className={styles.scheme}>
         <Circle head={'head'} index={0} letter="0" />
         <ArrowIcon />

@@ -7,10 +7,10 @@ import { Direction } from '../../types/direction';
 import { delay } from '../../utils/delay';
 import { Column, ColumnProps } from '../ui/column/column';
 import { SHORT_DELAY_IN_MS } from '../../constants/delays';
-import createRandomArr from '../../utils/createRandomArr';
-import sortBySelection from '../../utils/sortBySelection';
+import createRandomArr from '../../utils/create-random-arr';
+import sortBySelection from '../../utils/sort-by-selection';
 import { ElementStates } from '../../types/element-states';
-import sortByBubble from '../../utils/sortByBubble';
+import sortByBubble from '../../utils/sort-by-bubble';
 
 export const SortingPage: React.FC = () => {
   const [isDisabled, setIsDisabled] = useState(false);
@@ -112,7 +112,7 @@ export const SortingPage: React.FC = () => {
           />
         </div>
       </nav>
-      <div className={styles.sorting_columns}>
+      <div className={styles.scheme}>
         {columns.map((column, ind) => (
           <Column index={column.index} key={ind} state={column.state} />
         ))}
