@@ -30,3 +30,9 @@
 .button_bot {
   width: 370px;
 }
+
+.article {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
