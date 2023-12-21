@@ -12,6 +12,7 @@ import {
   setElementStateWithDelay,
 } from '../../utils';
 import { removeFromHead } from '../../utils/head';
+import { HEAD, TAIL } from '../../constants/element-captions';
 
 export const QueuePage: React.FC = () => {
   const [isAddingDisabled, setIsAddingDisabled] = useState(false);
@@ -41,7 +42,7 @@ export const QueuePage: React.FC = () => {
   };
 
   const enqueue = async () => {
-    const tailIndex = findMarkedElementIndex(elements, 'tail');
+    const tailIndex = findMarkedElementIndex(elements, TAIL);
 
     if (tailIndex === elements.length - 1) return;
 
@@ -59,7 +60,7 @@ export const QueuePage: React.FC = () => {
         ElementStates.Changing,
         0
       );
-      await addToTail(str, elements, setElements, tailIndex);
+      await addToTail(str, elements, setElements, tailIndex, HEAD);
       await setElementStateWithDelay(
         elements,
         setElements,
@@ -104,27 +105,28 @@ export const QueuePage: React.FC = () => {
     setIsClearingDisabled(true);
     setIsInputDisabled(true);
 
-    const tailIndex = findMarkedElementIndex(elements, 'tail');
-    const headIndex = findMarkedElementIndex(elements, 'head');
+    const tailIndex = findMarkedElementIndex(elements, TAIL);
+    const headIndex = findMarkedElementIndex(elements, HEAD);
 
-    if (headIndex !== null) {
-      await setElementStateWithDelay(
-        elements,
-        setElements,
-        headIndex,
-        ElementStates.Changing,
-        0
-      );
-      await setElementStateWithDelay(
-        elements,
-        setElements,
-        headIndex,
-        ElementStates.Default,
-        SHORT_DELAY_IN_MS
-      );
-      await removeFromHead(elements, setElements, headIndex, tailIndex);
-    }
-    // unblock
+    if (headIndex === null || tailIndex === null) return;
+
+    await setElementStateWithDelay(
+      elements,
+      setElements,
+      headIndex,
+      ElementStates.Changing,
+      0
+    );
+    await setElementStateWithDelay(
+      elements,
+      setElements,
+      headIndex,
+      ElementStates.Default,
+      SHORT_DELAY_IN_MS
+    );
+    await removeFromHead(elements, setElements, headIndex, tailIndex);
+
+    // unblock controls
     setIsClearingDisabled(false);
     setIsDeletingRunning(false);
 

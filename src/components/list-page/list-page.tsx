@@ -45,6 +45,14 @@ export const ListPage: React.FC = () => {
         <ArrowIcon />
         <Circle index={2} letter="8" />
         <ArrowIcon />
+        <Circle index={2} letter="8" />
+        <ArrowIcon />
+        <Circle index={2} letter="8" />
+        <ArrowIcon />
+        <Circle index={2} letter="8" />
+        <ArrowIcon />
+        <Circle index={2} letter="8" />
+        <ArrowIcon />
         <Circle index={3} letter="1" tail={'tail'} />
       </div>
     </SolutionLayout>

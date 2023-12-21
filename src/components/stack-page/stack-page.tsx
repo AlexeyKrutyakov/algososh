@@ -7,7 +7,13 @@ import { Circle } from '../ui/circle/circle';
 import { CircleProps } from '../ui/circle/circle';
 import { ElementStates } from '../../types/element-states';
 import { SHORT_DELAY_IN_MS } from '../../constants/delays';
-import { delay } from '../../utils';
+import {
+  addToTail,
+  delay,
+  findMarkedElementIndex,
+  setElementStateWithDelay,
+} from '../../utils';
+import { HEAD, TOP } from '../../constants/element-captions';
 
 export const StackPage: React.FC = () => {
   const [isDisabled, setIsDisabled] = useState(false);
@@ -20,17 +26,38 @@ export const StackPage: React.FC = () => {
   const addElement = async () => {
     if (elements.length === 10) return;
 
+    // disable controls
     setIsAddingRunning(true);
     setIsDisabled(true);
 
-    const element: CircleProps = { letter: str, state: ElementStates.Changing };
-    setStr('');
-    elements.push(element);
-    setElements([...elements]);
-    await delay(SHORT_DELAY_IN_MS);
-    elements[elements.length - 1].state = ElementStates.Default;
-    setElements([...elements]);
+    const headIndex = findMarkedElementIndex(elements, HEAD);
 
+    if (headIndex === null) {
+      const element: CircleProps = { letter: str };
+      elements.push(element);
+      setElements([...elements]);
+    }
+    setStr('');
+
+    await addToTail(str, elements, setElements, headIndex, TOP);
+
+    await setElementStateWithDelay(
+      elements,
+      setElements,
+      elements.length - 1,
+      ElementStates.Changing,
+      0
+    );
+
+    await setElementStateWithDelay(
+      elements,
+      setElements,
+      elements.length - 1,
+      ElementStates.Default,
+      SHORT_DELAY_IN_MS
+    );
+
+    //enable controls
     setIsDisabled(false);
     setIsAddingRunning(false);
   };
@@ -39,17 +66,26 @@ export const StackPage: React.FC = () => {
     if (elements.length === 0) return;
 
     setStr('');
+
+    // disable controls
     setIsDeletingRunning(true);
     setIsDisabled(true);
     setIsAddingDisabled(true);
 
-    elements[elements.length - 1].state = ElementStates.Changing;
-    setElements([...elements]);
+    await setElementStateWithDelay(
+      elements,
+      setElements,
+      elements.length - 1,
+      ElementStates.Changing,
+      0
+    );
+
     await delay(SHORT_DELAY_IN_MS);
 
     elements.pop();
     setElements([...elements]);
 
+    // enable controls
     setIsDisabled(false);
     setIsDeletingRunning(false);
   };
