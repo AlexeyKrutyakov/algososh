@@ -11,7 +11,7 @@ import {
   findMarkedElementIndex,
   setElementStateWithDelay,
 } from '../../utils';
-import { removeFromHead } from '../../utils/head';
+import { removeFromHead } from '../../utils/manipulate-with-head';
 import { HEAD, TAIL } from '../../constants/element-captions';
 
 export const QueuePage: React.FC = () => {
@@ -60,7 +60,7 @@ export const QueuePage: React.FC = () => {
         ElementStates.Changing,
         0
       );
-      await addToTail(str, elements, setElements, tailIndex, HEAD);
+      await addToTail(elements, setElements, tailIndex, str, HEAD);
       await setElementStateWithDelay(
         elements,
         setElements,
@@ -76,7 +76,7 @@ export const QueuePage: React.FC = () => {
         ElementStates.Changing,
         0
       );
-      await addToTail(str, elements, setElements, tailIndex);
+      await addToTail(elements, setElements, tailIndex, str);
       await setElementStateWithDelay(
         elements,
         setElements,

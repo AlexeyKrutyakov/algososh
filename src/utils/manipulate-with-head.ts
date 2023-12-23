@@ -19,7 +19,7 @@ export const removeFromHead = async (
   elements: CircleProps[],
   setElements: React.Dispatch<SetStateAction<CircleProps[]>>,
   headIndex: number,
-  tailIndex: number
+  tailIndex?: number
 ) => {
   if (headIndex === tailIndex) {
     elements[headIndex].tail = '';

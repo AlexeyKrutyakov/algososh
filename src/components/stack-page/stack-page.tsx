@@ -37,9 +37,9 @@ export const StackPage: React.FC = () => {
       elements.push(element);
       setElements([...elements]);
     }
-    setStr('');
 
-    await addToTail(str, elements, setElements, headIndex, TOP);
+    await addToTail(elements, setElements, headIndex, str, TOP);
+    setStr('');
 
     await setElementStateWithDelay(
       elements,

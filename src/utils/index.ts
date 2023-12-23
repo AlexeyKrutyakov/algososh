@@ -8,4 +8,5 @@ export * from './sort-by-bubble';
 export * from './sort-by-selection';
 export * from './turn-over-circles';
 export * from './set-element-state-with-delay';
-export * from './tail';
+export * from './manipulate-with-tail';
+export * from './manipulate-with-index';

@@ -2,7 +2,7 @@ import { CircleProps } from '../components/ui/circle/circle';
 
 export const findMarkedElementIndex = (
   elements: CircleProps[],
-  mark: string
+  mark: string | React.ReactElement
 ) => {
   let markedElementIndex: number | null = null;
 
