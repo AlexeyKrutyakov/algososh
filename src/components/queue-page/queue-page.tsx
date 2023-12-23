@@ -43,6 +43,7 @@ export const QueuePage: React.FC = () => {
 
   const enqueue = async () => {
     const tailIndex = findMarkedElementIndex(elements, TAIL);
+    console.log(tailIndex);
 
     if (tailIndex === elements.length - 1) return;
 
