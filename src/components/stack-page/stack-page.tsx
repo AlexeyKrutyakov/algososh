@@ -13,7 +13,7 @@ import {
   findMarkedElementIndex,
   setElementStateWithDelay,
 } from '../../utils';
-import { HEAD, TOP } from '../../constants/element-captions';
+import { TOP } from '../../constants/element-captions';
 
 export const StackPage: React.FC = () => {
   const [isDisabled, setIsDisabled] = useState(false);
