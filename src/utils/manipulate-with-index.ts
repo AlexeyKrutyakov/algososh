@@ -42,4 +42,28 @@ export const addByIndex = async (
   setElements([...elements]);
 };
 
-export const removeByIndex = async () => {};
+export const removeByIndex = async (
+  elements: CircleProps[],
+  setElements: React.Dispatch<SetStateAction<CircleProps[]>>,
+  index: number,
+  tailElement: ReactElement
+) => {
+  for (let i = 0; i <= index; i++) {
+    elements[i].state = ElementStates.Changing;
+    setElements([...elements]);
+    await delay(SHORT_DELAY_IN_MS);
+  }
+
+  elements[index].state = ElementStates.Default;
+  elements[index].letter = '';
+  elements[index].tail = tailElement;
+  setElements([...elements]);
+  await delay(SHORT_DELAY_IN_MS);
+
+  for (let i = 0; i < index; i++) {
+    elements[i].state = ElementStates.Default;
+  }
+
+  elements.splice(index, 1);
+  setElements([...elements]);
+};

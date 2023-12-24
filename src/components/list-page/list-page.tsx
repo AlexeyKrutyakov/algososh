@@ -12,6 +12,7 @@ import {
   addToTail,
   delay,
   findMarkedElementIndex,
+  removeByIndex,
   removeFromTail,
   setElementStateWithDelay,
 } from '../../utils';
@@ -260,6 +261,29 @@ export const ListPage: React.FC = () => {
     setIsAddByIndexRunner(false);
   };
 
+  const removeByIndexHandler = async () => {
+    if (elements.length <= 2) return;
+    if (inputIndex === undefined) return;
+
+    setIsRemoveByIndexRunner(true);
+    disableControls();
+
+    const tailElement = (
+      <Circle
+        letter={elements[+inputIndex].letter}
+        isSmall={true}
+        state={ElementStates.Changing}
+      />
+    );
+
+    await removeByIndex(elements, setElements, +inputIndex, tailElement);
+
+    enableControls();
+    setStr('');
+    setInputIndex('');
+    setIsRemoveByIndexRunner(false);
+  };
+
   useEffect(() => {
     setElements([...INITIAL_ELEMENTS]);
     // eslint-disable-next-line
@@ -360,6 +384,7 @@ export const ListPage: React.FC = () => {
         <Button
           extraClass={styles.button_bot}
           text="Удалить по индексу"
+          onClick={removeByIndexHandler}
           isLoader={isRemoveByIndexRunner}
           disabled={isRemoveByIndexDisabled}
         />
