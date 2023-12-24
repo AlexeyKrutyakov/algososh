@@ -1,6 +1,6 @@
 import { SetStateAction } from 'react';
 import { CircleProps } from '../components/ui/circle/circle';
-import { TAIL } from '../constants/element-captions';
+import { TAIL, TOP } from '../constants/element-captions';
 
 export const addToTail = async (
   elements: CircleProps[],
@@ -15,6 +15,12 @@ export const addToTail = async (
     elements[0].tail = TAIL;
     setElements([...elements]);
   } else {
+    if (headMarker === TOP) {
+      elements[index].head = '';
+      elements.push({});
+      setElements([...elements]);
+    }
+
     elements[index].tail = '';
     elements[index + 1].letter = str;
     elements[index + 1].tail = TAIL;

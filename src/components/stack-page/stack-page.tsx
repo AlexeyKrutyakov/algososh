@@ -30,7 +30,7 @@ export const StackPage: React.FC = () => {
     setIsAddingRunning(true);
     setIsDisabled(true);
 
-    const headIndex = findMarkedElementIndex(elements, HEAD);
+    const headIndex = findMarkedElementIndex(elements, TOP);
 
     if (headIndex === null) {
       const element: CircleProps = { letter: str };
