@@ -12,7 +12,7 @@ export const INITIAL_ELEMENTS = [
     letter: '8',
   },
   {
-    letter: '8',
+    letter: '1',
     tail: TAIL,
   },
 ];
