@@ -5,6 +5,7 @@
   flex-wrap: wrap;
   gap: 16px;
   row-gap: 78px;
+  justify-content: center;
 }
 
 .form {
