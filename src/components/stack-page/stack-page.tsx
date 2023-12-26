@@ -22,6 +22,10 @@ class Stack<T> implements TStack<T> {
     this.elements.pop();
   };
 
+  clear = (): void => {
+    this.elements = [];
+  };
+
   getElements = (): T[] => {
     return this.elements;
   };
@@ -90,9 +94,13 @@ export const StackPage: React.FC = () => {
 
   const clear = async () => {
     setStr('');
-    setIsAddingDisabled(true);
+    setIsDisabled(true);
+
     if (stack.getSize() === 0) return;
-    setStack(new Stack<CircleProps>());
+    stack.clear();
+    // setStack(stack);
+
+    setIsDisabled(false);
   };
 
   useEffect(() => {
@@ -107,6 +115,7 @@ export const StackPage: React.FC = () => {
     <SolutionLayout title="Стек">
       <nav className={styles.controls}>
         <Input
+          name="text"
           value={str}
           extraClass={styles.input}
           isLimitText={true}
@@ -134,15 +143,12 @@ export const StackPage: React.FC = () => {
         />
       </nav>
       <ul className={styles.scheme}>
-        {/* {elements.length > 0 && */}
         {stack.getSize() > 0 &&
-          // elements.map((element, index) => (
           stack.getElements().map((element, index) => (
             <li key={index}>
               <Circle
                 letter={element.letter}
                 index={index}
-                // head={index === elements.length - 1 ? 'top' : null}
                 head={index === stack.getSize() - 1 ? 'top' : null}
                 state={element.state}
               />
