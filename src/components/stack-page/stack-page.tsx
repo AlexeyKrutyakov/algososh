@@ -7,8 +7,7 @@ import { Circle } from '../ui/circle/circle';
 import { CircleProps } from '../ui/circle/circle';
 import { ElementStates } from '../../types/element-states';
 import { SHORT_DELAY_IN_MS } from '../../constants/delays';
-import { delay, findMarkedElementIndex } from '../../utils';
-import { TOP } from '../../constants/element-captions';
+import { delay } from '../../utils';
 import { TStack } from '../../types';
 
 class Stack<T> implements TStack<T> {
@@ -35,15 +34,34 @@ class Stack<T> implements TStack<T> {
   };
 }
 
+const stack = new Stack<string>();
+
 export const StackPage: React.FC = () => {
   const [isDisabled, setIsDisabled] = useState(false);
   const [isAddingDisabled, setIsAddingDisabled] = useState(false);
   const [isAddingRunning, setIsAddingRunning] = useState(false);
   const [isDeletingRunning, setIsDeletingRunning] = useState(false);
-  const [str, setStr] = useState<string>('');
-  const [stack, setStack] = useState<Stack<CircleProps>>(
-    new Stack<CircleProps>()
+  const [activeCircleState, setActiveCircleState] = useState<ElementStates>(
+    ElementStates.Default
   );
+  const [str, setStr] = useState<string>('');
+  const [circles, setCircles] = useState<CircleProps[]>([]);
+
+  const createCircles = (stack: Stack<string>): CircleProps[] => {
+    const circles = [];
+    const elements = stack.getElements();
+    for (let i = 0; i < elements.length; i++) {
+      circles.push({
+        letter: elements[i],
+        state:
+          i < elements.length - 1
+            ? ElementStates.Default
+            : ElementStates.Changing,
+      });
+    }
+
+    return circles;
+  };
 
   const addElement = async () => {
     if (stack.getSize() === 10) return;
@@ -52,20 +70,14 @@ export const StackPage: React.FC = () => {
     setIsAddingRunning(true);
     setIsDisabled(true);
 
-    const headIndex = findMarkedElementIndex(stack.getElements(), TOP);
+    stack.push(str);
+    setCircles(createCircles(stack));
 
-    if (headIndex === null) {
-      const element: CircleProps = {
-        letter: str,
-        state: ElementStates.Changing,
-      };
-      stack.push(element);
-      setStack(stack);
-    }
-
+    // animate circle
+    setActiveCircleState(ElementStates.Changing);
     await delay(SHORT_DELAY_IN_MS);
-    stack.getElements()[stack.getSize() - 1].state = ElementStates.Default;
-    setStack(stack);
+    setActiveCircleState(ElementStates.Default);
+
     setStr('');
 
     //enable controls
@@ -74,33 +86,29 @@ export const StackPage: React.FC = () => {
   };
 
   const deleteElement = async () => {
-    if (stack.getSize() === 0) return;
-    setStr('');
-    // disable controls
-    setIsDeletingRunning(true);
-    setIsDisabled(true);
-    setIsAddingDisabled(true);
-
-    stack.getElements()[stack.getSize() - 1].state = ElementStates.Changing;
-    setStack(stack);
-    await delay(SHORT_DELAY_IN_MS);
-    stack.pop();
-    setStack(stack);
-
-    // enable controls
-    setIsDisabled(false);
-    setIsDeletingRunning(false);
+    // if (stack.getSize() === 0) return;
+    // setStr('');
+    // // disable controls
+    // setIsDeletingRunning(true);
+    // setIsDisabled(true);
+    // setIsAddingDisabled(true);
+    // stack.getElements()[stack.getSize() - 1].state = ElementStates.Changing;
+    // setCircles(stack);
+    // await delay(SHORT_DELAY_IN_MS);
+    // stack.pop();
+    // setCircles(stack);
+    // // enable controls
+    // setIsDisabled(false);
+    // setIsDeletingRunning(false);
   };
 
   const clear = async () => {
-    setStr('');
-    setIsDisabled(true);
-
-    if (stack.getSize() === 0) return;
-    stack.clear();
-    // setStack(stack);
-
-    setIsDisabled(false);
+    // if (stack.getSize() === 0) return;
+    // setIsDisabled(true);
+    // stack.clear();
+    // setCircles(new Stack<CircleProps>());
+    // setStr('');
+    // setIsDisabled(false);
   };
 
   useEffect(() => {
@@ -143,14 +151,18 @@ export const StackPage: React.FC = () => {
         />
       </nav>
       <ul className={styles.scheme}>
-        {stack.getSize() > 0 &&
-          stack.getElements().map((element, index) => (
+        {circles.length > 0 &&
+          circles.map((element, index) => (
             <li key={index}>
               <Circle
                 letter={element.letter}
                 index={index}
-                head={index === stack.getSize() - 1 ? 'top' : null}
-                state={element.state}
+                head={index === circles.length - 1 ? 'top' : null}
+                state={
+                  index === circles.length - 1
+                    ? activeCircleState
+                    : ElementStates.Default
+                }
               />
             </li>
           ))}
