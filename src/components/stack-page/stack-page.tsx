@@ -9,13 +9,7 @@ import { ElementStates } from '../../types/element-states';
 import { SHORT_DELAY_IN_MS } from '../../constants/delays';
 import { delay, findMarkedElementIndex } from '../../utils';
 import { TOP } from '../../constants/element-captions';
-
-type TStack<T> = {
-  push: (item: T) => void;
-  pop: () => void;
-  getElements: () => T[] | [];
-  getSize: () => number;
-};
+import { TStack } from '../../types';
 
 class Stack<T> implements TStack<T> {
   private elements: T[] = [];
