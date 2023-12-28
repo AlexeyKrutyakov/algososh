@@ -70,10 +70,11 @@ export const StackPage: React.FC = () => {
     setIsAddingRunning(true);
     setIsDisabled(true);
 
+    // add element
     stack.push(str);
     setCircles(createCircles(stack));
 
-    // animate circle
+    // animate process
     setActiveCircleState(ElementStates.Changing);
     await delay(SHORT_DELAY_IN_MS);
     setActiveCircleState(ElementStates.Default);
@@ -86,29 +87,41 @@ export const StackPage: React.FC = () => {
   };
 
   const deleteElement = async () => {
-    // if (stack.getSize() === 0) return;
-    // setStr('');
-    // // disable controls
-    // setIsDeletingRunning(true);
-    // setIsDisabled(true);
-    // setIsAddingDisabled(true);
-    // stack.getElements()[stack.getSize() - 1].state = ElementStates.Changing;
-    // setCircles(stack);
-    // await delay(SHORT_DELAY_IN_MS);
-    // stack.pop();
-    // setCircles(stack);
-    // // enable controls
-    // setIsDisabled(false);
-    // setIsDeletingRunning(false);
+    if (stack.getSize() === 0) return;
+
+    // disable controls
+    setIsDeletingRunning(true);
+    setIsDisabled(true);
+    setIsAddingDisabled(true);
+
+    // animate process
+    setActiveCircleState(ElementStates.Changing);
+    await delay(SHORT_DELAY_IN_MS);
+    setActiveCircleState(ElementStates.Default);
+
+    // delete element
+    stack.pop();
+    setCircles(createCircles(stack));
+    setStr('');
+
+    // enable controls
+    setIsDisabled(false);
+    setIsDeletingRunning(false);
   };
 
   const clear = async () => {
-    // if (stack.getSize() === 0) return;
-    // setIsDisabled(true);
-    // stack.clear();
-    // setCircles(new Stack<CircleProps>());
-    // setStr('');
-    // setIsDisabled(false);
+    if (stack.getSize() === 0) return;
+
+    // disable controls
+    setIsDisabled(true);
+
+    // clear stack and circles
+    stack.clear();
+    setCircles([]);
+    setStr('');
+
+    // enable controls
+    setIsDisabled(false);
   };
 
   useEffect(() => {
