@@ -1,76 +1,12 @@
 import styles from './queue-page.module.css';
 import React, { useEffect, useState } from 'react';
-import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 import { Input } from '../ui/input/input';
 import { Button } from '../ui/button/button';
 import { Circle, CircleProps } from '../ui/circle/circle';
-import { ElementStates } from '../../types/element-states';
+import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 import { renderAnimation } from '../../utils';
+import { Queue, ElementStates } from '../../types';
 import { HEAD, TAIL } from '../../constants/element-captions';
-import { TQueue } from '../../types/queue';
-
-class Queue<T> implements TQueue<T> {
-  private elements: T[] = [];
-  private head: number | null = null;
-  private tail: number | null = null;
-  private size: number = 0;
-
-  constructor(size: number) {
-    this.size = size;
-  }
-
-  enqueue = (item: T): void => {
-    if (this.head === null || this.tail === null) {
-      this.elements[0] = item;
-      this.head = 0;
-      this.tail = 0;
-    } else {
-      if ((this.head || this.tail) === this.getSize() - 1) {
-        return;
-      } else {
-        this.elements.push(item);
-        this.tail++;
-      }
-    }
-  };
-
-  dequeue = (): void => {
-    if (this.head === null || this.tail === null) return;
-
-    if (this.head === this.tail) {
-      this.tail = null;
-    } else {
-      this.head++;
-    }
-    this.elements.shift();
-  };
-
-  clear = (): void => {
-    this.elements = [];
-    this.head = null;
-    this.tail = null;
-  };
-
-  getHead = (): number | null => {
-    return this.head;
-  };
-
-  getTail = (): number | null => {
-    return this.tail;
-  };
-
-  getElements = (): T[] => {
-    return this.elements;
-  };
-
-  getSize = (): number => {
-    return this.size;
-  };
-
-  getLength = (): number => {
-    return this.elements.length;
-  };
-}
 
 const queue = new Queue<string>(7);
 
@@ -156,7 +92,7 @@ export const QueuePage: React.FC = () => {
     setStr('');
   };
 
-  const clear = async () => {
+  const clearQueue = async () => {
     queue.clear();
     setCircles(createCircles());
     setStr('');
@@ -210,7 +146,7 @@ export const QueuePage: React.FC = () => {
         <Button
           extraClass={styles.button_last}
           text="Очистить"
-          onClick={clear}
+          onClick={clearQueue}
           disabled={
             (queue.getLength() === 0 && queue.getHead() === null) ||
             isClearDisabled
