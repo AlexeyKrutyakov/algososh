@@ -11,31 +11,15 @@ import { HEAD, TAIL } from '../../constants/element-captions';
 const queue = new Queue<string>(7);
 
 export const QueuePage: React.FC = () => {
-  const [isInputDisabled, setIsInputDisabled] = useState<boolean>(false);
-  const [isAddDisabled, setIsAddDisabled] = useState<boolean>(false);
-  const [isDeleteDisabled, setIsDeleteDisabled] = useState<boolean>(false);
-  const [isClearDisabled, setIsClearDisabled] = useState<boolean>(false);
-  const [isAddingRunning, setIsAddingRunning] = useState(false);
-  const [isDeletingRunning, setIsDeletingRunning] = useState(false);
+  const [isControlsDisabled, setIsControlsDisabled] = useState<boolean>(false);
+  const [isAddingRunning, setIsAddingRunning] = useState<boolean>(false);
+  const [isDeletingRunning, setIsDeletingRunning] = useState<boolean>(false);
+  const [isClearingRunning, setIsCleringRunning] = useState<boolean>(false);
   const [activeCircleState, setActiveCircleState] = useState<ElementStates>(
     ElementStates.Default
   );
   const [str, setStr] = useState<string>('');
   const [circles, setCircles] = useState<CircleProps[]>([]);
-
-  const disableControls = (): void => {
-    setIsInputDisabled(true);
-    setIsAddDisabled(true);
-    setIsDeleteDisabled(true);
-    setIsClearDisabled(true);
-  };
-
-  const enableControls = (): void => {
-    setIsInputDisabled(false);
-    setIsAddDisabled(false);
-    setIsDeleteDisabled(false);
-    setIsClearDisabled(false);
-  };
 
   const createCircles = (): CircleProps[] => {
     const circles = [];
@@ -61,7 +45,7 @@ export const QueuePage: React.FC = () => {
   const addElement = async () => {
     if (queue.getLength() >= queue.getSize()) return;
 
-    disableControls();
+    setIsControlsDisabled(true);
     setIsAddingRunning(true);
 
     // add element
@@ -70,14 +54,14 @@ export const QueuePage: React.FC = () => {
 
     await renderAnimation(setActiveCircleState);
 
-    enableControls();
+    setIsControlsDisabled(false);
     setIsAddingRunning(false);
 
     setStr('');
   };
 
   const deleteElement = async () => {
-    disableControls();
+    setIsControlsDisabled(true);
     setIsDeletingRunning(true);
 
     await renderAnimation(setActiveCircleState);
@@ -86,15 +70,22 @@ export const QueuePage: React.FC = () => {
     queue.dequeue();
     setCircles(createCircles());
 
-    enableControls();
+    setIsControlsDisabled(false);
     setIsDeletingRunning(false);
 
     setStr('');
   };
 
   const clearQueue = async () => {
+    setIsControlsDisabled(true);
+    setIsCleringRunning(true);
+
     queue.clear();
     setCircles(createCircles());
+
+    setIsControlsDisabled(false);
+    setIsCleringRunning(false);
+
     setStr('');
   };
 
@@ -124,7 +115,7 @@ export const QueuePage: React.FC = () => {
           onChange={event => setStr(event.currentTarget.value)}
           disabled={
             (queue.getHead() !== null && queue.getTail() === null) ||
-            isInputDisabled
+            isControlsDisabled
           }
         />
         <Button
@@ -134,22 +125,23 @@ export const QueuePage: React.FC = () => {
           disabled={
             str === '' ||
             (queue.getHead() !== null && queue.getTail() === null) ||
-            isAddDisabled
+            isControlsDisabled
           }
         />
         <Button
           text="Удалить"
           onClick={deleteElement}
           isLoader={isDeletingRunning}
-          disabled={queue.getLength() === 0 || isDeleteDisabled}
+          disabled={queue.getLength() === 0 || isControlsDisabled}
         />
         <Button
           extraClass={styles.button_last}
           text="Очистить"
           onClick={clearQueue}
+          isLoader={isClearingRunning}
           disabled={
             (queue.getLength() === 0 && queue.getHead() === null) ||
-            isClearDisabled
+            isControlsDisabled
           }
         />
       </nav>
