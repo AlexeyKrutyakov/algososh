@@ -5,34 +5,9 @@ import { Input } from '../ui/input/input';
 import { Button } from '../ui/button/button';
 import { Circle } from '../ui/circle/circle';
 import { CircleProps } from '../ui/circle/circle';
-import { ElementStates } from '../../types/element-states';
 import { SHORT_DELAY_IN_MS } from '../../constants/delays';
 import { delay } from '../../utils';
-import { TStack } from '../../types';
-
-class Stack<T> implements TStack<T> {
-  private elements: T[] = [];
-
-  push = (item: T): void => {
-    this.elements.push(item);
-  };
-
-  pop = (): void => {
-    this.elements.pop();
-  };
-
-  clear = (): void => {
-    this.elements = [];
-  };
-
-  getElements = (): T[] => {
-    return this.elements;
-  };
-
-  getSize = (): number => {
-    return this.elements.length;
-  };
-}
+import { Stack, ElementStates } from '../../types';
 
 const stack = new Stack<string>();
 
