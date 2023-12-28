@@ -10,3 +10,4 @@ export * from './turn-over-circles';
 export * from './set-element-state-with-delay';
 export * from './manipulate-with-tail';
 export * from './manipulate-with-index';
+export * from './render-animation';
