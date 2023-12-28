@@ -8,6 +8,11 @@ type TStack<T> = {
 
 export class Stack<T> implements TStack<T> {
   private elements: T[] = [];
+  private size: number = 0;
+
+  constructor(size: number) {
+    this.size = size;
+  }
 
   push = (item: T): void => {
     this.elements.push(item);
@@ -26,6 +31,10 @@ export class Stack<T> implements TStack<T> {
   };
 
   getSize = (): number => {
+    return this.size;
+  };
+
+  getLength = (): number => {
     return this.elements.length;
   };
 }

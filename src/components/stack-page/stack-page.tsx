@@ -1,19 +1,17 @@
 import styles from './stack-page.module.css';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 import { Input } from '../ui/input/input';
 import { Button } from '../ui/button/button';
 import { Circle } from '../ui/circle/circle';
 import { CircleProps } from '../ui/circle/circle';
-import { SHORT_DELAY_IN_MS } from '../../constants/delays';
-import { delay } from '../../utils';
+import { renderAnimation } from '../../utils';
 import { Stack, ElementStates } from '../../types';
 
-const stack = new Stack<string>();
+const stack = new Stack<string>(10);
 
 export const StackPage: React.FC = () => {
-  const [isDisabled, setIsDisabled] = useState(false);
-  const [isAddingDisabled, setIsAddingDisabled] = useState(false);
+  const [isControlsDisabled, setIsControlsDisabled] = useState(false);
   const [isAddingRunning, setIsAddingRunning] = useState(false);
   const [isDeletingRunning, setIsDeletingRunning] = useState(false);
   const [activeCircleState, setActiveCircleState] = useState<ElementStates>(
@@ -39,73 +37,52 @@ export const StackPage: React.FC = () => {
   };
 
   const addElement = async () => {
-    if (stack.getSize() === 10) return;
+    if (stack.getLength() === stack.getSize()) return;
 
-    // disable controls
     setIsAddingRunning(true);
-    setIsDisabled(true);
+    setIsControlsDisabled(true);
 
     // add element
     stack.push(str);
     setCircles(createCircles(stack));
 
-    // animate process
-    setActiveCircleState(ElementStates.Changing);
-    await delay(SHORT_DELAY_IN_MS);
-    setActiveCircleState(ElementStates.Default);
+    renderAnimation(setActiveCircleState);
+
+    setIsControlsDisabled(false);
+    setIsAddingRunning(false);
 
     setStr('');
-
-    //enable controls
-    setIsDisabled(false);
-    setIsAddingRunning(false);
   };
 
   const deleteElement = async () => {
     if (stack.getSize() === 0) return;
 
-    // disable controls
     setIsDeletingRunning(true);
-    setIsDisabled(true);
-    setIsAddingDisabled(true);
+    setIsControlsDisabled(true);
 
-    // animate process
-    setActiveCircleState(ElementStates.Changing);
-    await delay(SHORT_DELAY_IN_MS);
-    setActiveCircleState(ElementStates.Default);
+    renderAnimation(setActiveCircleState);
 
     // delete element
     stack.pop();
     setCircles(createCircles(stack));
     setStr('');
 
-    // enable controls
-    setIsDisabled(false);
+    setIsControlsDisabled(false);
     setIsDeletingRunning(false);
   };
 
   const clear = async () => {
     if (stack.getSize() === 0) return;
 
-    // disable controls
-    setIsDisabled(true);
+    setIsControlsDisabled(true);
 
     // clear stack and circles
     stack.clear();
     setCircles([]);
     setStr('');
 
-    // enable controls
-    setIsDisabled(false);
+    setIsControlsDisabled(false);
   };
-
-  useEffect(() => {
-    if (str === '') {
-      setIsAddingDisabled(true);
-    } else {
-      setIsAddingDisabled(false);
-    }
-  }, [str]);
 
   return (
     <SolutionLayout title="Стек">
@@ -117,25 +94,25 @@ export const StackPage: React.FC = () => {
           isLimitText={true}
           maxLength={4}
           onChange={event => setStr(event.currentTarget.value)}
-          disabled={isDisabled}
+          disabled={isControlsDisabled}
         />
         <Button
           text="Добавить"
           onClick={addElement}
           isLoader={isAddingRunning}
-          disabled={isAddingDisabled}
+          disabled={str === '' || isControlsDisabled}
         />
         <Button
           text="Удалить"
           onClick={deleteElement}
           isLoader={isDeletingRunning}
-          disabled={isDisabled}
+          disabled={stack.getLength() === 0 || isControlsDisabled}
         />
         <Button
           extraClass={styles.button_last}
           text="Очистить"
           onClick={clear}
-          disabled={isDisabled}
+          disabled={stack.getLength() === 0 || isControlsDisabled}
         />
       </nav>
       <ul className={styles.scheme}>
