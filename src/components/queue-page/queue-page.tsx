@@ -5,8 +5,9 @@ import { Button } from '../ui/button/button';
 import { Circle, CircleProps } from '../ui/circle/circle';
 import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 import { renderAnimation } from '../../utils';
-import { Queue, ElementStates } from '../../types';
+import { ElementStates } from '../../types';
 import { HEAD, TAIL } from '../../constants/element-captions';
+import { Queue } from './queue';
 
 const queue = new Queue<string>(7);
 

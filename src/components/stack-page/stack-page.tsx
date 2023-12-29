@@ -6,7 +6,8 @@ import { Button } from '../ui/button/button';
 import { Circle } from '../ui/circle/circle';
 import { CircleProps } from '../ui/circle/circle';
 import { renderAnimation } from '../../utils';
-import { Stack, ElementStates } from '../../types';
+import { ElementStates } from '../../types';
+import { Stack } from './stack';
 
 const stack = new Stack<string>(10);
 
