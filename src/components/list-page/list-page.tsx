@@ -17,14 +17,18 @@ import {
   setElementStateWithDelay,
 } from '../../utils';
 import { SHORT_DELAY_IN_MS } from '../../constants/delays';
-import { INITIAL_ELEMENTS } from '../../constants/initial-elements';
 import { addToHead, removeFromHead } from '../../utils/manipulate-with-head';
+import { LinkedList } from './linked-list';
+
+const linkedList = new LinkedList<string>();
 
 export const ListPage: React.FC = () => {
-  const [elements, setElements] = useState<CircleProps[]>([]);
+  // const [elements, setElements] = useState<CircleProps[]>([]);
   const [str, setStr] = useState<string>('');
   const [inputIndex, setInputIndex] = useState<string>('');
+  const [circles, setCircles] = useState<CircleProps[]>([]);
 
+  const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const [isAddToHeadRunner, setIsAddToHeadRunner] = useState<boolean>(false);
   const [isAddToTailRunner, setIsAddToTailRunner] = useState<boolean>(false);
   const [isRemoveFromHeadRunner, setIsRemoveFromHeadRunner] =
@@ -35,293 +39,309 @@ export const ListPage: React.FC = () => {
   const [isRemoveByIndexRunner, setIsRemoveByIndexRunner] =
     useState<boolean>(false);
 
-  const [isAddToHeadDisabled, setIsAddToHeadDisabled] = useState<boolean>(true);
-  const [isAddToTailDisabled, setIsAddToTailDisabled] = useState<boolean>(true);
-  const [isRemoveFromHeadDisabled, setIsRemoveFromHeadDisabled] =
-    useState<boolean>(false);
-  const [isRemoveFromTailDisabled, setIsRemoveFromTailDisabled] =
-    useState<boolean>(false);
-  const [isAddByIndexDisabled, setIsAddByIndexDisabled] =
-    useState<boolean>(true);
-  const [isRemoveByIndexDisabled, setIsRemoveByIndexDisabled] =
-    useState<boolean>(true);
-  const [isInputValueDisabled, setIsInputValueDisabled] =
-    useState<boolean>(false);
-  const [isInputIndexDisabled, setIsInputIndexDisabled] =
-    useState<boolean>(false);
+  // const [isAddToHeadDisabled, setIsAddToHeadDisabled] = useState<boolean>(true);
+  // const [isAddToTailDisabled, setIsAddToTailDisabled] = useState<boolean>(true);
+  // const [isRemoveFromHeadDisabled, setIsRemoveFromHeadDisabled] =
+  //   useState<boolean>(false);
+  // const [isRemoveFromTailDisabled, setIsRemoveFromTailDisabled] =
+  //   useState<boolean>(false);
+  // const [isAddByIndexDisabled, setIsAddByIndexDisabled] =
+  //   useState<boolean>(true);
+  // const [isRemoveByIndexDisabled, setIsRemoveByIndexDisabled] =
+  //   useState<boolean>(true);
+  // const [isInputValueDisabled, setIsInputValueDisabled] =
+  //   useState<boolean>(false);
+  // const [isInputIndexDisabled, setIsInputIndexDisabled] =
+  //   useState<boolean>(false);
 
-  const disableButtons = () => {
-    setIsAddToHeadDisabled(true);
-    setIsAddToTailDisabled(true);
-    setIsRemoveFromHeadDisabled(true);
-    setIsRemoveFromTailDisabled(true);
-    setIsAddByIndexDisabled(true);
-    setIsRemoveByIndexDisabled(true);
+  // const disableButtons = () => {
+  //   setIsAddToHeadDisabled(true);
+  //   setIsAddToTailDisabled(true);
+  //   setIsRemoveFromHeadDisabled(true);
+  //   setIsRemoveFromTailDisabled(true);
+  //   setIsAddByIndexDisabled(true);
+  //   setIsRemoveByIndexDisabled(true);
+  // };
+
+  // const enableButtons = () => {
+  //   setIsAddToHeadDisabled(false);
+  //   setIsAddToTailDisabled(false);
+  //   setIsRemoveFromHeadDisabled(false);
+  //   setIsRemoveFromTailDisabled(false);
+  //   setIsAddByIndexDisabled(false);
+  //   setIsRemoveByIndexDisabled(false);
+  // };
+
+  // const disableInputs = () => {
+  //   setIsInputValueDisabled(true);
+  //   setIsInputIndexDisabled(true);
+  // };
+
+  // const enableInputs = () => {
+  //   setIsInputValueDisabled(false);
+  //   setIsInputIndexDisabled(false);
+  // };
+
+  // const disableControls = () => {
+  //   disableButtons();
+  //   disableInputs();
+  // };
+
+  // const enableControls = () => {
+  //   enableButtons();
+  //   enableInputs();
+  // };
+
+  const createCircles = (initialList?: CircleProps[]): CircleProps[] => {
+    if (initialList) return initialList;
+
+    const circles: CircleProps[] = [];
+    let current = linkedList.getHead();
+
+    while (current) {
+      const newCircle = {
+        letter: current.value,
+        state: ElementStates.Default,
+      };
+      circles.push(newCircle);
+      current = current.next;
+    }
+
+    return circles;
   };
 
-  const enableButtons = () => {
-    setIsAddToHeadDisabled(false);
-    setIsAddToTailDisabled(false);
-    setIsRemoveFromHeadDisabled(false);
-    setIsRemoveFromTailDisabled(false);
-    setIsAddByIndexDisabled(false);
-    setIsRemoveByIndexDisabled(false);
-  };
+  const renderAnimation = (type: string): void => {
+    switch (type) {
+      case 'addToHead':
+        break;
 
-  const disableInputs = () => {
-    setIsInputValueDisabled(true);
-    setIsInputIndexDisabled(true);
-  };
-
-  const enableInputs = () => {
-    setIsInputValueDisabled(false);
-    setIsInputIndexDisabled(false);
-  };
-
-  const disableControls = () => {
-    disableButtons();
-    disableInputs();
-  };
-
-  const enableControls = () => {
-    enableButtons();
-    enableInputs();
+      default:
+        break;
+    }
   };
 
   const addToHeadHandler = async () => {
-    if (elements.length >= 9) return;
-
-    setIsAddToHeadRunner(true);
-    disableControls();
-
-    let headIndex = findMarkedElementIndex(elements, HEAD);
-    if (headIndex === null) return;
-
-    elements[headIndex].head = (
-      <Circle letter={str} isSmall={true} state={ElementStates.Changing} />
-    );
-    setElements([...elements]);
-
-    await delay(SHORT_DELAY_IN_MS);
-
-    const newElement = { letter: 'zero', state: ElementStates.Modified };
-    elements.unshift(newElement);
-    setElements([...elements]);
-
-    headIndex++;
-    await addToHead(elements, setElements, headIndex, str);
-
-    setElementStateWithDelay(
-      elements,
-      setElements,
-      0,
-      ElementStates.Default,
-      SHORT_DELAY_IN_MS
-    );
-
-    setStr('');
-    enableInputs();
-    setIsRemoveFromHeadDisabled(false);
-    setIsRemoveFromTailDisabled(false);
-    setIsAddToHeadRunner(false);
+    linkedList.prepend(str);
+    setCircles(createCircles());
+    // if (elements.length >= 9) return;
+    // setIsAddToHeadRunner(true);
+    // disableControls();
+    // let headIndex = findMarkedElementIndex(elements, HEAD);
+    // if (headIndex === null) return;
+    // elements[headIndex].head = (
+    //   <Circle letter={str} isSmall={true} state={ElementStates.Changing} />
+    // );
+    // setElements([...elements]);
+    // await delay(SHORT_DELAY_IN_MS);
+    // const newElement = { letter: 'zero', state: ElementStates.Modified };
+    // elements.unshift(newElement);
+    // setElements([...elements]);
+    // headIndex++;
+    // await addToHead(elements, setElements, headIndex, str);
+    // setElementStateWithDelay(
+    //   elements,
+    //   setElements,
+    //   0,
+    //   ElementStates.Default,
+    //   SHORT_DELAY_IN_MS
+    // );
+    // setStr('');
+    // enableInputs();
+    // setIsRemoveFromHeadDisabled(false);
+    // setIsRemoveFromTailDisabled(false);
+    // setIsAddToHeadRunner(false);
   };
 
   const addToTailHandler = async () => {
-    if (elements.length >= 9) return;
-
-    setIsAddToTailRunner(true);
-    disableControls();
-
-    let tailIndex = findMarkedElementIndex(elements, TAIL);
-    if (tailIndex === null) return;
-
-    elements[tailIndex].head = (
-      <Circle letter={str} isSmall={true} state={ElementStates.Changing} />
-    );
-    setElements([...elements]);
-
-    await delay(SHORT_DELAY_IN_MS);
-
-    const newElement = { letter: '', state: ElementStates.Modified };
-    elements.push(newElement);
-    setElements([...elements]);
-
-    await addToTail(elements, setElements, tailIndex, str);
-
-    elements[tailIndex].head = '';
-    setElements([...elements]);
-
-    setElementStateWithDelay(
-      elements,
-      setElements,
-      elements.length - 1,
-      ElementStates.Default,
-      SHORT_DELAY_IN_MS
-    );
-
-    setStr('');
-    enableInputs();
-    setIsRemoveFromHeadDisabled(false);
-    setIsRemoveFromTailDisabled(false);
-    setIsAddToTailRunner(false);
+    linkedList.append(str);
+    setCircles(createCircles());
+    // if (elements.length >= 9) return;
+    // setIsAddToTailRunner(true);
+    // disableControls();
+    // let tailIndex = findMarkedElementIndex(elements, TAIL);
+    // if (tailIndex === null) return;
+    // elements[tailIndex].head = (
+    //   <Circle letter={str} isSmall={true} state={ElementStates.Changing} />
+    // );
+    // setElements([...elements]);
+    // await delay(SHORT_DELAY_IN_MS);
+    // const newElement = { letter: '', state: ElementStates.Modified };
+    // elements.push(newElement);
+    // setElements([...elements]);
+    // await addToTail(elements, setElements, tailIndex, str);
+    // elements[tailIndex].head = '';
+    // setElements([...elements]);
+    // setElementStateWithDelay(
+    //   elements,
+    //   setElements,
+    //   elements.length - 1,
+    //   ElementStates.Default,
+    //   SHORT_DELAY_IN_MS
+    // );
+    // setStr('');
+    // enableInputs();
+    // setIsRemoveFromHeadDisabled(false);
+    // setIsRemoveFromTailDisabled(false);
+    // setIsAddToTailRunner(false);
   };
 
   const removeFromHeadHandler = async () => {
-    if (elements.length <= 2) return;
+    // if (linkedList.getLength() <= 2) return;
 
-    setIsRemoveFromHeadRunner(true);
-    disableControls();
-
-    const headIndex = findMarkedElementIndex(elements, HEAD);
-    if (headIndex === null) return;
-
-    elements[headIndex].tail = (
-      <Circle
-        letter={elements[headIndex].letter}
-        isSmall={true}
-        state={ElementStates.Changing}
-      />
-    );
-    elements[headIndex].letter = '';
-    await delay(SHORT_DELAY_IN_MS);
-    await removeFromHead(elements, setElements, headIndex);
-    elements.shift();
-    elements[0].state = ElementStates.Modified;
-    setElements([...elements]);
-
-    await setElementStateWithDelay(
-      elements,
-      setElements,
-      0,
-      ElementStates.Default,
-      SHORT_DELAY_IN_MS
-    );
-
-    setStr('');
-    enableInputs();
-    setIsRemoveFromHeadDisabled(false);
-    setIsRemoveFromTailDisabled(false);
-    setIsRemoveFromHeadRunner(false);
+    linkedList.deleteHead();
+    setCircles(createCircles());
+    // if (elements.length <= 2) return;
+    // setIsRemoveFromHeadRunner(true);
+    // disableControls();
+    // const headIndex = findMarkedElementIndex(elements, HEAD);
+    // if (headIndex === null) return;
+    // elements[headIndex].tail = (
+    //   <Circle
+    //     letter={elements[headIndex].letter}
+    //     isSmall={true}
+    //     state={ElementStates.Changing}
+    //   />
+    // );
+    // elements[headIndex].letter = '';
+    // await delay(SHORT_DELAY_IN_MS);
+    // await removeFromHead(elements, setElements, headIndex);
+    // elements.shift();
+    // elements[0].state = ElementStates.Modified;
+    // setElements([...elements]);
+    // await setElementStateWithDelay(
+    //   elements,
+    //   setElements,
+    //   0,
+    //   ElementStates.Default,
+    //   SHORT_DELAY_IN_MS
+    // );
+    // setStr('');
+    // enableInputs();
+    // setIsRemoveFromHeadDisabled(false);
+    // setIsRemoveFromTailDisabled(false);
+    // setIsRemoveFromHeadRunner(false);
   };
 
   const removeFromTailHandler = async () => {
-    if (elements.length <= 2) return;
+    // if (linkedList.getLength() <= 2) return;
 
-    setIsRemoveFromTailRunner(true);
-    disableControls();
-
-    const tailIndex = findMarkedElementIndex(elements, TAIL);
-    if (tailIndex === null) return;
-
-    elements[tailIndex].tail = (
-      <Circle
-        letter={elements[tailIndex].letter}
-        isSmall={true}
-        state={ElementStates.Changing}
-      />
-    );
-    elements[tailIndex].letter = '';
-    await delay(SHORT_DELAY_IN_MS);
-    await removeFromTail(elements, setElements, tailIndex);
-    elements.pop();
-    elements[elements.length - 1].state = ElementStates.Modified;
-    setElements([...elements]);
-
-    await setElementStateWithDelay(
-      elements,
-      setElements,
-      elements.length - 1,
-      ElementStates.Default,
-      SHORT_DELAY_IN_MS
-    );
-
-    setStr('');
-    enableInputs();
-    setIsRemoveFromHeadDisabled(false);
-    setIsRemoveFromTailDisabled(false);
-    setIsRemoveFromTailRunner(false);
+    linkedList.deleteTail();
+    setCircles(createCircles());
+    // if (elements.length <= 2) return;
+    // setIsRemoveFromTailRunner(true);
+    // disableControls();
+    // const tailIndex = findMarkedElementIndex(elements, TAIL);
+    // if (tailIndex === null) return;
+    // elements[tailIndex].tail = (
+    //   <Circle
+    //     letter={elements[tailIndex].letter}
+    //     isSmall={true}
+    //     state={ElementStates.Changing}
+    //   />
+    // );
+    // elements[tailIndex].letter = '';
+    // await delay(SHORT_DELAY_IN_MS);
+    // await removeFromTail(elements, setElements, tailIndex);
+    // elements.pop();
+    // elements[elements.length - 1].state = ElementStates.Modified;
+    // setElements([...elements]);
+    // await setElementStateWithDelay(
+    //   elements,
+    //   setElements,
+    //   elements.length - 1,
+    //   ElementStates.Default,
+    //   SHORT_DELAY_IN_MS
+    // );
+    // setStr('');
+    // enableInputs();
+    // setIsRemoveFromHeadDisabled(false);
+    // setIsRemoveFromTailDisabled(false);
+    // setIsRemoveFromTailRunner(false);
   };
 
   const addByIndexHandler = async () => {
-    if (elements.length >= 8) return;
-    if (inputIndex === undefined) return;
-
-    setIsAddByIndexRunner(true);
-    disableControls();
-
-    const headElement = (
-      <Circle letter={str} isSmall={true} state={ElementStates.Changing} />
-    );
-
-    await addByIndex(elements, setElements, str, +inputIndex, headElement);
-
-    enableControls();
-    setStr('');
-    setInputIndex('');
-    setIsAddByIndexRunner(false);
+    linkedList.addByIndex(+inputIndex, str);
+    setCircles(createCircles());
+    // if (elements.length >= 8) return;
+    // if (inputIndex === undefined) return;
+    // setIsAddByIndexRunner(true);
+    // disableControls();
+    // const headElement = (
+    //   <Circle letter={str} isSmall={true} state={ElementStates.Changing} />
+    // );
+    // await addByIndex(elements, setElements, str, +inputIndex, headElement);
+    // enableControls();
+    // setStr('');
+    // setInputIndex('');
+    // setIsAddByIndexRunner(false);
   };
 
   const removeByIndexHandler = async () => {
-    if (elements.length <= 2) return;
-    if (inputIndex === undefined) return;
+    // if (linkedList.getLength() <= 2) return;
 
-    setIsRemoveByIndexRunner(true);
-    disableControls();
-
-    const tailElement = (
-      <Circle
-        letter={elements[+inputIndex].letter}
-        isSmall={true}
-        state={ElementStates.Changing}
-      />
-    );
-
-    await removeByIndex(elements, setElements, +inputIndex, tailElement);
-
-    enableControls();
-    setStr('');
-    setInputIndex('');
-    setIsRemoveByIndexRunner(false);
+    linkedList.deleteByIndex(+inputIndex);
+    setCircles(createCircles());
+    // if (elements.length <= 2) return;
+    // if (inputIndex === undefined) return;
+    // setIsRemoveByIndexRunner(true);
+    // disableControls();
+    // const tailElement = (
+    //   <Circle
+    //     letter={elements[+inputIndex].letter}
+    //     isSmall={true}
+    //     state={ElementStates.Changing}
+    //   />
+    // );
+    // await removeByIndex(elements, setElements, +inputIndex, tailElement);
+    // enableControls();
+    // setStr('');
+    // setInputIndex('');
+    // setIsRemoveByIndexRunner(false);
   };
 
   useEffect(() => {
-    setElements([...INITIAL_ELEMENTS]);
+    linkedList.append('0');
+    linkedList.append('34');
+    linkedList.append('8');
+    linkedList.append('1');
+
+    setCircles(createCircles());
     // eslint-disable-next-line
   }, []);
 
-  useEffect(() => {
-    if (str === '') {
-      setIsAddToHeadDisabled(true);
-      setIsAddToTailDisabled(true);
-    } else {
-      setIsAddToHeadDisabled(false);
-      setIsAddToTailDisabled(false);
-    }
-  }, [str]);
+  // useEffect(() => {
+  //   if (str === '') {
+  //     setIsAddToHeadDisabled(true);
+  //     setIsAddToTailDisabled(true);
+  //   } else {
+  //     setIsAddToHeadDisabled(false);
+  //     setIsAddToTailDisabled(false);
+  //   }
+  // }, [str]);
 
-  useEffect(() => {
-    if (
-      str !== '' &&
-      inputIndex !== '' &&
-      +inputIndex <= elements.length - 1 &&
-      +inputIndex >= 1
-    ) {
-      setIsAddByIndexDisabled(false);
-    } else {
-      setIsAddByIndexDisabled(true);
-    }
+  // useEffect(() => {
+  //   if (
+  //     str !== '' &&
+  //     inputIndex !== '' &&
+  //     +inputIndex <= elements.length - 1 &&
+  //     +inputIndex >= 1
+  //   ) {
+  //     setIsAddByIndexDisabled(false);
+  //   } else {
+  //     setIsAddByIndexDisabled(true);
+  //   }
 
-    if (
-      inputIndex === '' ||
-      +inputIndex < 1 ||
-      +inputIndex > elements.length - 2 ||
-      elements.length <= 2
-    ) {
-      setIsRemoveByIndexDisabled(true);
-    } else {
-      setIsRemoveByIndexDisabled(false);
-    }
-  }, [str, inputIndex, elements]);
+  //   if (
+  //     inputIndex === '' ||
+  //     +inputIndex < 1 ||
+  //     +inputIndex > elements.length - 2 ||
+  //     elements.length <= 2
+  //   ) {
+  //     setIsRemoveByIndexDisabled(true);
+  //   } else {
+  //     setIsRemoveByIndexDisabled(false);
+  //   }
+  // }, [str, inputIndex, elements]);
 
   return (
     <SolutionLayout title="Связный список">
@@ -334,35 +354,35 @@ export const ListPage: React.FC = () => {
           maxLength={4}
           value={str}
           onChange={event => setStr(event.currentTarget.value)}
-          disabled={isInputValueDisabled}
+          // disabled={isInputValueDisabled}
         />
         <Button
           extraClass={styles.button_top}
           text="Добавить в head"
           onClick={addToHeadHandler}
           isLoader={isAddToHeadRunner}
-          disabled={isAddToHeadDisabled}
+          // disabled={isAddToHeadDisabled}
         />
         <Button
           extraClass={styles.button_top}
           text="Добавить в tail"
           onClick={addToTailHandler}
           isLoader={isAddToTailRunner}
-          disabled={isAddToTailDisabled}
+          // disabled={isAddToTailDisabled}
         />
         <Button
           extraClass={styles.button_top}
           text="Удалить из head"
           onClick={removeFromHeadHandler}
           isLoader={isRemoveFromHeadRunner}
-          disabled={isRemoveFromHeadDisabled}
+          // disabled={isRemoveFromHeadDisabled}
         />
         <Button
           extraClass={styles.button_top}
           text="Удалить из tail"
           onClick={removeFromTailHandler}
           isLoader={isRemoveFromTailRunner}
-          disabled={isRemoveFromTailDisabled}
+          // disabled={isRemoveFromTailDisabled}
         />
       </nav>
       <nav className={styles.controls_index}>
@@ -372,38 +392,39 @@ export const ListPage: React.FC = () => {
           type="number"
           value={inputIndex}
           onChange={event => setInputIndex(event.currentTarget.value)}
-          disabled={isInputIndexDisabled}
+          // disabled={isInputIndexDisabled}
         />
         <Button
           extraClass={styles.button_bot}
           text="Добавить по индексу"
           onClick={addByIndexHandler}
           isLoader={isAddByIndexRunner}
-          disabled={isAddByIndexDisabled}
+          // disabled={isAddByIndexDisabled}
         />
         <Button
           extraClass={styles.button_bot}
           text="Удалить по индексу"
           onClick={removeByIndexHandler}
           isLoader={isRemoveByIndexRunner}
-          disabled={isRemoveByIndexDisabled}
+          // disabled={isRemoveByIndexDisabled}
         />
       </nav>
       <div className={styles.scheme}>
-        {elements.map((element, index) => {
-          return (
-            <article key={index} className={styles.article}>
-              <Circle
-                index={index}
-                letter={element.letter}
-                head={element.head}
-                tail={element.tail}
-                state={element.state}
-              />
-              {index !== elements.length - 1 && <ArrowIcon />}
-            </article>
-          );
-        })}
+        {linkedList.getSize() > 0 &&
+          circles.map((element, index) => {
+            return (
+              <article key={index} className={styles.article}>
+                <Circle
+                  index={index}
+                  letter={element.letter}
+                  head={index === 0 ? HEAD : ''}
+                  tail={index === linkedList.getSize() - 1 ? TAIL : ''}
+                  state={element.state}
+                />
+                {index !== circles.length - 1 && <ArrowIcon />}
+              </article>
+            );
+          })}
       </div>
     </SolutionLayout>
   );
