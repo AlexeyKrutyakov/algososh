@@ -16,17 +16,28 @@ import {
   removeFromTail,
   setElementStateWithDelay,
 } from '../../utils';
-import { SHORT_DELAY_IN_MS } from '../../constants/delays';
+import { DELAY_IN_MS, SHORT_DELAY_IN_MS } from '../../constants/delays';
 import { addToHead, removeFromHead } from '../../utils/manipulate-with-head';
 import { LinkedList } from './linked-list';
+import { JsxElement } from 'typescript';
+import { ADD_TO_HEAD } from '../../constants/animations';
 
 const linkedList = new LinkedList<string>();
+const linkedListLimitSize = 9;
 
 export const ListPage: React.FC = () => {
   // const [elements, setElements] = useState<CircleProps[]>([]);
   const [str, setStr] = useState<string>('');
   const [inputIndex, setInputIndex] = useState<string>('');
   const [circles, setCircles] = useState<CircleProps[]>([]);
+  const [headMark, setHeadMark] = useState<CircleProps | null>(null);
+  const [tailMark, setTailMark] = useState<CircleProps | null>(null);
+  const [activeCircleIndex, setActiveCircleIndex] = useState<number | null>(
+    null
+  );
+  const [activeCircleState, setActiveCircleState] = useState<ElementStates>(
+    ElementStates.Default
+  );
 
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const [isAddToHeadRunner, setIsAddToHeadRunner] = useState<boolean>(false);
@@ -92,6 +103,11 @@ export const ListPage: React.FC = () => {
   //   enableInputs();
   // };
 
+  const circleMark: CircleProps = {
+    letter: '',
+    state: ElementStates.Changing,
+  };
+
   const createCircles = (initialList?: CircleProps[]): CircleProps[] => {
     if (initialList) return initialList;
 
@@ -110,79 +126,88 @@ export const ListPage: React.FC = () => {
     return circles;
   };
 
-  const renderAnimation = (type: string): void => {
-    switch (type) {
-      case 'addToHead':
-        break;
+  const createHeadCircleMark = (): JSX.Element | null => {
+    if (!headMark) return null;
+    return (
+      <Circle
+        letter={headMark?.letter}
+        isSmall={true}
+        state={headMark?.state}
+      />
+    );
+  };
 
-      default:
-        break;
-    }
+  const createTailCircleMark = (): JSX.Element | null => {
+    if (!tailMark) return null;
+    return (
+      <Circle
+        letter={tailMark?.letter}
+        isSmall={true}
+        state={tailMark?.state}
+      />
+    );
+  };
+
+  const animateModifiedCircle = async (): Promise<void> => {
+    setActiveCircleState(ElementStates.Modified);
+    await delay(SHORT_DELAY_IN_MS);
+    setActiveCircleState(ElementStates.Default);
+    setActiveCircleIndex(null);
+  };
+
+  const animateAddingAsHeadMark = async (): Promise<void> => {
+    setHeadMark(circleMark);
+    await delay(SHORT_DELAY_IN_MS);
+    circleMark.letter = '';
+    setHeadMark(null);
+  };
+
+  const animateDeletingAsTailMark = async (): Promise<void> => {
+    setTailMark(circleMark);
+    await delay(SHORT_DELAY_IN_MS);
+    circleMark.letter = '';
+    setTailMark(null);
   };
 
   const addToHeadHandler = async () => {
+    if (linkedList.getSize() >= linkedListLimitSize) return;
+
+    setIsDisabled(true);
+    setIsAddToHeadRunner(true);
+
+    setActiveCircleIndex(0);
+    circleMark.letter = str;
+    await animateAddingAsHeadMark();
+
     linkedList.prepend(str);
     setCircles(createCircles());
-    // if (elements.length >= 9) return;
-    // setIsAddToHeadRunner(true);
-    // disableControls();
-    // let headIndex = findMarkedElementIndex(elements, HEAD);
-    // if (headIndex === null) return;
-    // elements[headIndex].head = (
-    //   <Circle letter={str} isSmall={true} state={ElementStates.Changing} />
-    // );
-    // setElements([...elements]);
-    // await delay(SHORT_DELAY_IN_MS);
-    // const newElement = { letter: 'zero', state: ElementStates.Modified };
-    // elements.unshift(newElement);
-    // setElements([...elements]);
-    // headIndex++;
-    // await addToHead(elements, setElements, headIndex, str);
-    // setElementStateWithDelay(
-    //   elements,
-    //   setElements,
-    //   0,
-    //   ElementStates.Default,
-    //   SHORT_DELAY_IN_MS
-    // );
-    // setStr('');
-    // enableInputs();
-    // setIsRemoveFromHeadDisabled(false);
-    // setIsRemoveFromTailDisabled(false);
-    // setIsAddToHeadRunner(false);
+
+    await animateModifiedCircle();
+
+    setIsDisabled(false);
+    setIsAddToHeadRunner(false);
+    setStr('');
   };
 
   const addToTailHandler = async () => {
+    if (linkedList.getSize() >= linkedListLimitSize) return;
+
+    setIsDisabled(true);
+    setIsAddToTailRunner(true);
+
+    setActiveCircleIndex(linkedList.getSize() - 1);
+    circleMark.letter = str;
+    await animateAddingAsHeadMark();
+
     linkedList.append(str);
     setCircles(createCircles());
-    // if (elements.length >= 9) return;
-    // setIsAddToTailRunner(true);
-    // disableControls();
-    // let tailIndex = findMarkedElementIndex(elements, TAIL);
-    // if (tailIndex === null) return;
-    // elements[tailIndex].head = (
-    //   <Circle letter={str} isSmall={true} state={ElementStates.Changing} />
-    // );
-    // setElements([...elements]);
-    // await delay(SHORT_DELAY_IN_MS);
-    // const newElement = { letter: '', state: ElementStates.Modified };
-    // elements.push(newElement);
-    // setElements([...elements]);
-    // await addToTail(elements, setElements, tailIndex, str);
-    // elements[tailIndex].head = '';
-    // setElements([...elements]);
-    // setElementStateWithDelay(
-    //   elements,
-    //   setElements,
-    //   elements.length - 1,
-    //   ElementStates.Default,
-    //   SHORT_DELAY_IN_MS
-    // );
-    // setStr('');
-    // enableInputs();
-    // setIsRemoveFromHeadDisabled(false);
-    // setIsRemoveFromTailDisabled(false);
-    // setIsAddToTailRunner(false);
+
+    setActiveCircleIndex(linkedList.getSize() - 1);
+    await animateModifiedCircle();
+
+    setIsDisabled(false);
+    setIsAddToTailRunner(false);
+    setStr('');
   };
 
   const removeFromHeadHandler = async () => {
@@ -190,73 +215,25 @@ export const ListPage: React.FC = () => {
 
     linkedList.deleteHead();
     setCircles(createCircles());
-    // if (elements.length <= 2) return;
-    // setIsRemoveFromHeadRunner(true);
-    // disableControls();
-    // const headIndex = findMarkedElementIndex(elements, HEAD);
-    // if (headIndex === null) return;
-    // elements[headIndex].tail = (
-    //   <Circle
-    //     letter={elements[headIndex].letter}
-    //     isSmall={true}
-    //     state={ElementStates.Changing}
-    //   />
-    // );
-    // elements[headIndex].letter = '';
-    // await delay(SHORT_DELAY_IN_MS);
-    // await removeFromHead(elements, setElements, headIndex);
-    // elements.shift();
-    // elements[0].state = ElementStates.Modified;
-    // setElements([...elements]);
-    // await setElementStateWithDelay(
-    //   elements,
-    //   setElements,
-    //   0,
-    //   ElementStates.Default,
-    //   SHORT_DELAY_IN_MS
-    // );
-    // setStr('');
-    // enableInputs();
-    // setIsRemoveFromHeadDisabled(false);
-    // setIsRemoveFromTailDisabled(false);
-    // setIsRemoveFromHeadRunner(false);
   };
 
   const removeFromTailHandler = async () => {
-    // if (linkedList.getLength() <= 2) return;
+    if (linkedList.getSize() <= 2) return;
+
+    setIsDisabled(true);
+    setIsRemoveFromTailRunner(true);
+
+    circleMark.letter = circles[circles.length - 1].letter;
+    circles[circles.length - 1].letter = '';
+    setCircles([...circles]);
+    setActiveCircleIndex(linkedList.getSize() - 1);
+    await animateDeletingAsTailMark();
 
     linkedList.deleteTail();
     setCircles(createCircles());
-    // if (elements.length <= 2) return;
-    // setIsRemoveFromTailRunner(true);
-    // disableControls();
-    // const tailIndex = findMarkedElementIndex(elements, TAIL);
-    // if (tailIndex === null) return;
-    // elements[tailIndex].tail = (
-    //   <Circle
-    //     letter={elements[tailIndex].letter}
-    //     isSmall={true}
-    //     state={ElementStates.Changing}
-    //   />
-    // );
-    // elements[tailIndex].letter = '';
-    // await delay(SHORT_DELAY_IN_MS);
-    // await removeFromTail(elements, setElements, tailIndex);
-    // elements.pop();
-    // elements[elements.length - 1].state = ElementStates.Modified;
-    // setElements([...elements]);
-    // await setElementStateWithDelay(
-    //   elements,
-    //   setElements,
-    //   elements.length - 1,
-    //   ElementStates.Default,
-    //   SHORT_DELAY_IN_MS
-    // );
-    // setStr('');
-    // enableInputs();
-    // setIsRemoveFromHeadDisabled(false);
-    // setIsRemoveFromTailDisabled(false);
-    // setIsRemoveFromTailRunner(false);
+
+    setIsDisabled(false);
+    setIsRemoveFromTailRunner(false);
   };
 
   const addByIndexHandler = async () => {
@@ -306,42 +283,9 @@ export const ListPage: React.FC = () => {
     linkedList.append('1');
 
     setCircles(createCircles());
+
     // eslint-disable-next-line
   }, []);
-
-  // useEffect(() => {
-  //   if (str === '') {
-  //     setIsAddToHeadDisabled(true);
-  //     setIsAddToTailDisabled(true);
-  //   } else {
-  //     setIsAddToHeadDisabled(false);
-  //     setIsAddToTailDisabled(false);
-  //   }
-  // }, [str]);
-
-  // useEffect(() => {
-  //   if (
-  //     str !== '' &&
-  //     inputIndex !== '' &&
-  //     +inputIndex <= elements.length - 1 &&
-  //     +inputIndex >= 1
-  //   ) {
-  //     setIsAddByIndexDisabled(false);
-  //   } else {
-  //     setIsAddByIndexDisabled(true);
-  //   }
-
-  //   if (
-  //     inputIndex === '' ||
-  //     +inputIndex < 1 ||
-  //     +inputIndex > elements.length - 2 ||
-  //     elements.length <= 2
-  //   ) {
-  //     setIsRemoveByIndexDisabled(true);
-  //   } else {
-  //     setIsRemoveByIndexDisabled(false);
-  //   }
-  // }, [str, inputIndex, elements]);
 
   return (
     <SolutionLayout title="Связный список">
@@ -354,35 +298,35 @@ export const ListPage: React.FC = () => {
           maxLength={4}
           value={str}
           onChange={event => setStr(event.currentTarget.value)}
-          // disabled={isInputValueDisabled}
+          disabled={isDisabled}
         />
         <Button
           extraClass={styles.button_top}
           text="Добавить в head"
           onClick={addToHeadHandler}
           isLoader={isAddToHeadRunner}
-          // disabled={isAddToHeadDisabled}
+          disabled={isDisabled}
         />
         <Button
           extraClass={styles.button_top}
           text="Добавить в tail"
           onClick={addToTailHandler}
           isLoader={isAddToTailRunner}
-          // disabled={isAddToTailDisabled}
+          disabled={isDisabled}
         />
         <Button
           extraClass={styles.button_top}
           text="Удалить из head"
           onClick={removeFromHeadHandler}
           isLoader={isRemoveFromHeadRunner}
-          // disabled={isRemoveFromHeadDisabled}
+          disabled={isDisabled}
         />
         <Button
           extraClass={styles.button_top}
           text="Удалить из tail"
           onClick={removeFromTailHandler}
           isLoader={isRemoveFromTailRunner}
-          // disabled={isRemoveFromTailDisabled}
+          disabled={isDisabled}
         />
       </nav>
       <nav className={styles.controls_index}>
@@ -392,21 +336,21 @@ export const ListPage: React.FC = () => {
           type="number"
           value={inputIndex}
           onChange={event => setInputIndex(event.currentTarget.value)}
-          // disabled={isInputIndexDisabled}
+          disabled={isDisabled}
         />
         <Button
           extraClass={styles.button_bot}
           text="Добавить по индексу"
           onClick={addByIndexHandler}
           isLoader={isAddByIndexRunner}
-          // disabled={isAddByIndexDisabled}
+          disabled={isDisabled}
         />
         <Button
           extraClass={styles.button_bot}
           text="Удалить по индексу"
           onClick={removeByIndexHandler}
           isLoader={isRemoveByIndexRunner}
-          // disabled={isRemoveByIndexDisabled}
+          disabled={isDisabled}
         />
       </nav>
       <div className={styles.scheme}>
@@ -417,9 +361,25 @@ export const ListPage: React.FC = () => {
                 <Circle
                   index={index}
                   letter={element.letter}
-                  head={index === 0 ? HEAD : ''}
-                  tail={index === linkedList.getSize() - 1 ? TAIL : ''}
-                  state={element.state}
+                  head={
+                    headMark && index === activeCircleIndex
+                      ? createHeadCircleMark()
+                      : index === 0
+                      ? HEAD
+                      : ''
+                  }
+                  tail={
+                    tailMark && index === activeCircleIndex
+                      ? createTailCircleMark()
+                      : index === linkedList.getSize() - 1
+                      ? TAIL
+                      : ''
+                  }
+                  state={
+                    index === activeCircleIndex
+                      ? activeCircleState
+                      : element.state
+                  }
                 />
                 {index !== circles.length - 1 && <ArrowIcon />}
               </article>

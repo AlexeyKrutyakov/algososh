@@ -110,4 +110,15 @@ export class LinkedList<T> implements TLinkedList<T> {
   getSize = (): number => {
     return this.size;
   };
+
+  toArray = (): T[] => {
+    const arr = [];
+    let curr = this.head;
+
+    while (curr) {
+      arr.push(curr.value);
+      curr = curr.next;
+    }
+    return arr;
+  };
 }
