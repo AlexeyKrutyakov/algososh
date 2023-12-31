@@ -24,14 +24,22 @@ import { ADD_TO_HEAD } from '../../constants/animations';
 
 const linkedList = new LinkedList<string>();
 const linkedListLimitSize = 9;
+const initialCircleMark = {
+  letter: '',
+  state: ElementStates.Changing,
+  isSmall: true,
+};
 
 export const ListPage: React.FC = () => {
   // const [elements, setElements] = useState<CircleProps[]>([]);
   const [str, setStr] = useState<string>('');
   const [inputIndex, setInputIndex] = useState<string>('');
   const [circles, setCircles] = useState<CircleProps[]>([]);
-  const [headMark, setHeadMark] = useState<CircleProps | null>(null);
-  const [tailMark, setTailMark] = useState<CircleProps | null>(null);
+  const [mark, setMark] = useState<CircleProps>(initialCircleMark);
+  const [isAdding, setIsAdding] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [isTailCircleMark, setIsTailCircleMark] = useState<boolean>(false);
+  // const [tailMark, setTailMark] = useState<CircleProps | null>(null);
   const [activeCircleIndex, setActiveCircleIndex] = useState<number | null>(
     null
   );
@@ -50,63 +58,11 @@ export const ListPage: React.FC = () => {
   const [isRemoveByIndexRunner, setIsRemoveByIndexRunner] =
     useState<boolean>(false);
 
-  // const [isAddToHeadDisabled, setIsAddToHeadDisabled] = useState<boolean>(true);
-  // const [isAddToTailDisabled, setIsAddToTailDisabled] = useState<boolean>(true);
-  // const [isRemoveFromHeadDisabled, setIsRemoveFromHeadDisabled] =
-  //   useState<boolean>(false);
-  // const [isRemoveFromTailDisabled, setIsRemoveFromTailDisabled] =
-  //   useState<boolean>(false);
-  // const [isAddByIndexDisabled, setIsAddByIndexDisabled] =
-  //   useState<boolean>(true);
-  // const [isRemoveByIndexDisabled, setIsRemoveByIndexDisabled] =
-  //   useState<boolean>(true);
-  // const [isInputValueDisabled, setIsInputValueDisabled] =
-  //   useState<boolean>(false);
-  // const [isInputIndexDisabled, setIsInputIndexDisabled] =
-  //   useState<boolean>(false);
-
-  // const disableButtons = () => {
-  //   setIsAddToHeadDisabled(true);
-  //   setIsAddToTailDisabled(true);
-  //   setIsRemoveFromHeadDisabled(true);
-  //   setIsRemoveFromTailDisabled(true);
-  //   setIsAddByIndexDisabled(true);
-  //   setIsRemoveByIndexDisabled(true);
+  // const circleMark: CircleProps = {
+  //   letter: 'v',
+  //   state: ElementStates.Changing,
+  //   isSmall: true,
   // };
-
-  // const enableButtons = () => {
-  //   setIsAddToHeadDisabled(false);
-  //   setIsAddToTailDisabled(false);
-  //   setIsRemoveFromHeadDisabled(false);
-  //   setIsRemoveFromTailDisabled(false);
-  //   setIsAddByIndexDisabled(false);
-  //   setIsRemoveByIndexDisabled(false);
-  // };
-
-  // const disableInputs = () => {
-  //   setIsInputValueDisabled(true);
-  //   setIsInputIndexDisabled(true);
-  // };
-
-  // const enableInputs = () => {
-  //   setIsInputValueDisabled(false);
-  //   setIsInputIndexDisabled(false);
-  // };
-
-  // const disableControls = () => {
-  //   disableButtons();
-  //   disableInputs();
-  // };
-
-  // const enableControls = () => {
-  //   enableButtons();
-  //   enableInputs();
-  // };
-
-  const circleMark: CircleProps = {
-    letter: '',
-    state: ElementStates.Changing,
-  };
 
   const createCircles = (initialList?: CircleProps[]): CircleProps[] => {
     if (initialList) return initialList;
@@ -126,25 +82,9 @@ export const ListPage: React.FC = () => {
     return circles;
   };
 
-  const createHeadCircleMark = (): JSX.Element | null => {
-    if (!headMark) return null;
+  const createCircleMark = (): JSX.Element => {
     return (
-      <Circle
-        letter={headMark?.letter}
-        isSmall={true}
-        state={headMark?.state}
-      />
-    );
-  };
-
-  const createTailCircleMark = (): JSX.Element | null => {
-    if (!tailMark) return null;
-    return (
-      <Circle
-        letter={tailMark?.letter}
-        isSmall={true}
-        state={tailMark?.state}
-      />
+      <Circle letter={mark.letter} isSmall={mark.isSmall} state={mark.state} />
     );
   };
 
@@ -152,128 +92,178 @@ export const ListPage: React.FC = () => {
     setActiveCircleState(ElementStates.Modified);
     await delay(SHORT_DELAY_IN_MS);
     setActiveCircleState(ElementStates.Default);
-    setActiveCircleIndex(null);
-  };
-
-  const animateAddingAsHeadMark = async (): Promise<void> => {
-    setHeadMark(circleMark);
-    await delay(SHORT_DELAY_IN_MS);
-    circleMark.letter = '';
-    setHeadMark(null);
-  };
-
-  const animateDeletingAsTailMark = async (): Promise<void> => {
-    setTailMark(circleMark);
-    await delay(SHORT_DELAY_IN_MS);
-    circleMark.letter = '';
-    setTailMark(null);
   };
 
   const addToHeadHandler = async () => {
     if (linkedList.getSize() >= linkedListLimitSize) return;
 
+    // disable contlols, run loader
     setIsDisabled(true);
     setIsAddToHeadRunner(true);
 
+    // animate mark
+    mark.letter = str;
+    setMark(mark);
+    setIsAdding(true);
     setActiveCircleIndex(0);
-    circleMark.letter = str;
-    await animateAddingAsHeadMark();
+    await delay(SHORT_DELAY_IN_MS);
+    setIsAdding(false);
+    setMark(initialCircleMark);
 
+    // add to list
     linkedList.prepend(str);
     setCircles(createCircles());
 
+    // animate modified circle
+    setActiveCircleIndex(0);
     await animateModifiedCircle();
+    setActiveCircleIndex(null);
 
+    // enable contlols, stop loader
     setIsDisabled(false);
     setIsAddToHeadRunner(false);
+
     setStr('');
   };
 
   const addToTailHandler = async () => {
     if (linkedList.getSize() >= linkedListLimitSize) return;
 
+    // disable contlols, run loader
     setIsDisabled(true);
     setIsAddToTailRunner(true);
 
+    // animate mark
+    mark.letter = str;
+    setMark(mark);
+    setIsAdding(true);
     setActiveCircleIndex(linkedList.getSize() - 1);
-    circleMark.letter = str;
-    await animateAddingAsHeadMark();
+    await delay(SHORT_DELAY_IN_MS);
+    setIsAdding(false);
+    setMark(initialCircleMark);
 
+    // add to list
     linkedList.append(str);
     setCircles(createCircles());
 
+    // animate modified circle
     setActiveCircleIndex(linkedList.getSize() - 1);
     await animateModifiedCircle();
+    setActiveCircleIndex(null);
 
+    // enable contlols, stop loader
     setIsDisabled(false);
     setIsAddToTailRunner(false);
+
     setStr('');
   };
 
   const removeFromHeadHandler = async () => {
-    // if (linkedList.getLength() <= 2) return;
+    if (linkedList.getSize() <= 2) return;
 
+    // disable contlols, run loader
+    setIsDisabled(true);
+    setIsRemoveFromHeadRunner(true);
+
+    // animate mark
+    mark.letter = circles[0].letter;
+    setMark(mark);
+    circles[0].letter = '';
+    setCircles([...circles]);
+    setIsDeleting(true);
+    setActiveCircleIndex(0);
+    await delay(SHORT_DELAY_IN_MS);
+    setIsDeleting(false);
+    setMark(initialCircleMark);
+
+    // delete from list
     linkedList.deleteHead();
     setCircles(createCircles());
+
+    // enable contlols, stop loader
+    setIsDisabled(false);
+    setIsRemoveFromHeadRunner(false);
   };
 
   const removeFromTailHandler = async () => {
     if (linkedList.getSize() <= 2) return;
 
+    // disable contlols, run loader
     setIsDisabled(true);
     setIsRemoveFromTailRunner(true);
 
-    circleMark.letter = circles[circles.length - 1].letter;
-    circles[circles.length - 1].letter = '';
+    // animate mark
+    mark.letter = circles[linkedList.getSize() - 1].letter;
+    setMark(mark);
+    circles[linkedList.getSize() - 1].letter = '';
     setCircles([...circles]);
+    setIsDeleting(true);
     setActiveCircleIndex(linkedList.getSize() - 1);
-    await animateDeletingAsTailMark();
+    await delay(SHORT_DELAY_IN_MS);
+    setIsDeleting(false);
+    setMark(initialCircleMark);
 
+    // delete from list
     linkedList.deleteTail();
     setCircles(createCircles());
 
+    // enable contlols, stop loader
     setIsDisabled(false);
     setIsRemoveFromTailRunner(false);
   };
 
   const addByIndexHandler = async () => {
+    if (linkedList.getSize() >= linkedListLimitSize) return;
+
+    // animate goto index
+    for (let i = 0; i < +inputIndex; i++) {
+      circles[i].state = ElementStates.Changing;
+      setCircles([...circles]);
+      await delay(SHORT_DELAY_IN_MS);
+    }
+
+    // animate mark
+    mark.letter = str;
+    setMark(mark);
+    setIsAdding(true);
+    setActiveCircleIndex(+inputIndex);
+    await delay(SHORT_DELAY_IN_MS);
+    setIsAdding(false);
+    setMark(initialCircleMark);
+
+    // add to list
     linkedList.addByIndex(+inputIndex, str);
     setCircles(createCircles());
-    // if (elements.length >= 8) return;
-    // if (inputIndex === undefined) return;
-    // setIsAddByIndexRunner(true);
-    // disableControls();
-    // const headElement = (
-    //   <Circle letter={str} isSmall={true} state={ElementStates.Changing} />
-    // );
-    // await addByIndex(elements, setElements, str, +inputIndex, headElement);
-    // enableControls();
-    // setStr('');
-    // setInputIndex('');
-    // setIsAddByIndexRunner(false);
+
+    // animate modified circle
+    await animateModifiedCircle();
+    setActiveCircleIndex(null);
   };
 
   const removeByIndexHandler = async () => {
-    // if (linkedList.getLength() <= 2) return;
+    if (linkedList.getSize() <= 2) return;
 
+    // animate goto index
+    for (let i = 0; i < +inputIndex; i++) {
+      circles[i].state = ElementStates.Changing;
+      setCircles([...circles]);
+      await delay(SHORT_DELAY_IN_MS);
+    }
+
+    // animate mark
+    mark.letter = circles[+inputIndex].letter;
+    setMark(mark);
+    circles[+inputIndex].letter = '';
+    setCircles([...circles]);
+    setIsDeleting(true);
+    setActiveCircleIndex(+inputIndex);
+    await delay(SHORT_DELAY_IN_MS);
+    setIsDeleting(false);
+    setMark(initialCircleMark);
+
+    // add to list
     linkedList.deleteByIndex(+inputIndex);
     setCircles(createCircles());
-    // if (elements.length <= 2) return;
-    // if (inputIndex === undefined) return;
-    // setIsRemoveByIndexRunner(true);
-    // disableControls();
-    // const tailElement = (
-    //   <Circle
-    //     letter={elements[+inputIndex].letter}
-    //     isSmall={true}
-    //     state={ElementStates.Changing}
-    //   />
-    // );
-    // await removeByIndex(elements, setElements, +inputIndex, tailElement);
-    // enableControls();
-    // setStr('');
-    // setInputIndex('');
-    // setIsRemoveByIndexRunner(false);
   };
 
   useEffect(() => {
@@ -362,15 +352,15 @@ export const ListPage: React.FC = () => {
                   index={index}
                   letter={element.letter}
                   head={
-                    headMark && index === activeCircleIndex
-                      ? createHeadCircleMark()
+                    isAdding && index === activeCircleIndex
+                      ? createCircleMark()
                       : index === 0
                       ? HEAD
                       : ''
                   }
                   tail={
-                    tailMark && index === activeCircleIndex
-                      ? createTailCircleMark()
+                    isDeleting && index === activeCircleIndex
+                      ? createCircleMark()
                       : index === linkedList.getSize() - 1
                       ? TAIL
                       : ''
