@@ -26,7 +26,7 @@ export const ListPage: React.FC = () => {
   const [circles, setCircles] = useState<CircleProps[]>([]);
   const [mark, setMark] = useState<CircleProps>(initialCircleMark);
   const [isAdding, setIsAdding] = useState<boolean>(false);
-  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [isRemoving, setIsRemoving] = useState<boolean>(false);
   const [activeCircleIndex, setActiveCircleIndex] = useState<number | null>(
     null
   );
@@ -69,6 +69,36 @@ export const ListPage: React.FC = () => {
     );
   };
 
+  const animateAdding = async (index: number): Promise<void> => {
+    mark.letter = str;
+    setMark(mark);
+    setIsAdding(true);
+    setActiveCircleIndex(index);
+    await delay(SHORT_DELAY_IN_MS);
+    setIsAdding(false);
+    setMark(initialCircleMark);
+  };
+
+  const animateRemoving = async (index: number): Promise<void> => {
+    mark.letter = circles[index].letter;
+    setMark(mark);
+    circles[index].letter = '';
+    setCircles([...circles]);
+    setIsRemoving(true);
+    setActiveCircleIndex(index);
+    await delay(SHORT_DELAY_IN_MS);
+    setIsRemoving(false);
+    setMark(initialCircleMark);
+  };
+
+  const animateGoToIndex = async (index: number): Promise<void> => {
+    for (let i = 0; i < index; i++) {
+      circles[i].state = ElementStates.Changing;
+      setCircles([...circles]);
+      await delay(SHORT_DELAY_IN_MS);
+    }
+  };
+
   const animateModifiedCircle = async (): Promise<void> => {
     setActiveCircleState(ElementStates.Modified);
     await delay(SHORT_DELAY_IN_MS);
@@ -87,14 +117,7 @@ export const ListPage: React.FC = () => {
     setIsDisabled(true);
     setIsAddToHeadRunner(true);
 
-    // animate mark
-    mark.letter = str;
-    setMark(mark);
-    setIsAdding(true);
-    setActiveCircleIndex(0);
-    await delay(SHORT_DELAY_IN_MS);
-    setIsAdding(false);
-    setMark(initialCircleMark);
+    await animateAdding(0);
 
     // add to list
     linkedList.prepend(str);
@@ -119,14 +142,7 @@ export const ListPage: React.FC = () => {
     setIsDisabled(true);
     setIsAddToTailRunner(true);
 
-    // animate mark
-    mark.letter = str;
-    setMark(mark);
-    setIsAdding(true);
-    setActiveCircleIndex(linkedList.getSize() - 1);
-    await delay(SHORT_DELAY_IN_MS);
-    setIsAdding(false);
-    setMark(initialCircleMark);
+    await animateAdding(linkedList.getSize() - 1);
 
     // add to list
     linkedList.append(str);
@@ -151,16 +167,7 @@ export const ListPage: React.FC = () => {
     setIsDisabled(true);
     setIsRemoveFromHeadRunner(true);
 
-    // animate mark
-    mark.letter = circles[0].letter;
-    setMark(mark);
-    circles[0].letter = '';
-    setCircles([...circles]);
-    setIsDeleting(true);
-    setActiveCircleIndex(0);
-    await delay(SHORT_DELAY_IN_MS);
-    setIsDeleting(false);
-    setMark(initialCircleMark);
+    await animateRemoving(0);
 
     // delete from list
     linkedList.deleteHead();
@@ -180,16 +187,7 @@ export const ListPage: React.FC = () => {
     setIsDisabled(true);
     setIsRemoveFromTailRunner(true);
 
-    // animate mark
-    mark.letter = circles[linkedList.getSize() - 1].letter;
-    setMark(mark);
-    circles[linkedList.getSize() - 1].letter = '';
-    setCircles([...circles]);
-    setIsDeleting(true);
-    setActiveCircleIndex(linkedList.getSize() - 1);
-    await delay(SHORT_DELAY_IN_MS);
-    setIsDeleting(false);
-    setMark(initialCircleMark);
+    await animateRemoving(linkedList.getSize() - 1);
 
     // delete from list
     linkedList.deleteTail();
@@ -209,21 +207,9 @@ export const ListPage: React.FC = () => {
     setIsDisabled(true);
     setIsAddByIndexRunner(true);
 
-    // animate goto index
-    for (let i = 0; i < +inputIndex; i++) {
-      circles[i].state = ElementStates.Changing;
-      setCircles([...circles]);
-      await delay(SHORT_DELAY_IN_MS);
-    }
+    await animateGoToIndex(+inputIndex);
 
-    // animate mark
-    mark.letter = str;
-    setMark(mark);
-    setIsAdding(true);
-    setActiveCircleIndex(+inputIndex);
-    await delay(SHORT_DELAY_IN_MS);
-    setIsAdding(false);
-    setMark(initialCircleMark);
+    await animateAdding(+inputIndex);
 
     // add to list
     linkedList.addByIndex(+inputIndex, str);
@@ -247,23 +233,9 @@ export const ListPage: React.FC = () => {
     setIsDisabled(true);
     setIsRemoveByIndexRunner(true);
 
-    // animate goto index
-    for (let i = 0; i < +inputIndex; i++) {
-      circles[i].state = ElementStates.Changing;
-      setCircles([...circles]);
-      await delay(SHORT_DELAY_IN_MS);
-    }
+    await animateGoToIndex(+inputIndex);
 
-    // animate mark
-    mark.letter = circles[+inputIndex].letter;
-    setMark(mark);
-    circles[+inputIndex].letter = '';
-    setCircles([...circles]);
-    setIsDeleting(true);
-    setActiveCircleIndex(+inputIndex);
-    await delay(SHORT_DELAY_IN_MS);
-    setIsDeleting(false);
-    setMark(initialCircleMark);
+    await animateRemoving(+inputIndex);
 
     // add to list
     linkedList.deleteByIndex(+inputIndex);
@@ -380,7 +352,7 @@ export const ListPage: React.FC = () => {
                       : ''
                   }
                   tail={
-                    isDeleting && index === activeCircleIndex
+                    isRemoving && index === activeCircleIndex
                       ? createCircleMark()
                       : index === linkedList.getSize() - 1
                       ? TAIL
