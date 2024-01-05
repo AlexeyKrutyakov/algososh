@@ -1,0 +1,27 @@
+.scheme {
+  margin: 48px auto 0;
+  max-width: 944px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  row-gap: 78px;
+  justify-content: center;
+}
+
+.form {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.input {
+  max-width: 377px;
+}
+
+.circle {
+  align-self: center;
+}
+
+.button_disabled {
+  background-color: #e0e0e0;
+}
