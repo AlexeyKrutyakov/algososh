@@ -1,4 +1,5 @@
 import TestRenderer from 'react-test-renderer';
+import { render, screen, fireEvent } from '@testing-library/react';
 
 import { Button } from './button';
 
@@ -43,5 +44,26 @@ describe('Рендеринг кнопки', () => {
       />
     ).toJSON();
     expect(tree).toMatchSnapshot();
+  });
+
+  it('Нажатие на кнопку вызывает коллбэк', () => {
+    let testText = '';
+    const callback = () => {
+      testText = 'correct';
+    };
+
+    render(
+      <Button
+        type="submit"
+        text="Развернуть"
+        onClick={callback}
+      />
+    );
+
+    const btn = screen.getByText(/Развернуть/i);
+
+    fireEvent.click(btn);
+
+    expect(testText).toBe('correct');
   });
 });

@@ -55,12 +55,6 @@ export const StringComponent: React.FC = () => {
           type="submit"
           disabled={isButtonDisabled}
         />
-        <Button
-          isLoader={true}
-          text="Развернуть"
-          type="submit"
-          disabled={false}
-        />
       </form>
       {circles.length > 0 && (
         <div className={styles.scheme}>
