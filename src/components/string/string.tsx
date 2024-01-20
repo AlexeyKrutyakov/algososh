@@ -46,14 +46,25 @@ export const StringComponent: React.FC = () => {
           isLimitText={true}
           extraClass={styles.input}
           value={str}
-          onChange={event => setStr(event.currentTarget.value)}
+          onChange={(event) => setStr(event.currentTarget.value)}
           disabled={isInputDisabled}
         />
-        <Button isLoader={isLoading} text="Развернуть" type="submit" disabled={isButtonDisabled} />
+        <Button
+          isLoader={isLoading}
+          text="Развернуть"
+          type="submit"
+          disabled={isButtonDisabled}
+        />
+        <Button
+          isLoader={true}
+          text="Развернуть"
+          type="submit"
+          disabled={false}
+        />
       </form>
       {circles.length > 0 && (
         <div className={styles.scheme}>
-          {circles.map(circle => {
+          {circles.map((circle) => {
             return (
               <Circle
                 letter={circle.letter}
