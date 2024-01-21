@@ -4,21 +4,44 @@ import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 import { Input } from '../ui/input/input';
 import { Button } from '../ui/button/button';
 import { Circle, CircleProps } from '../ui/circle/circle';
-import turnOverCircles from '../../utils/turn-over-circles';
+import mirrorSymbols from '../../utils/mirror-symbols';
+import convertStringToCircles from '../../utils/convert-string-to-circles';
+import { delay } from '../../utils';
+import { ElementStates } from '../../types';
 
 export const StringComponent: React.FC = () => {
   const [str, setStr] = useState<string>('');
   const [circles, setCircles] = useState<CircleProps[]>([]);
+
+  const [changedIndex, setChangedIndex] = useState<number | null>(null);
+  const [modifyedIndex, setModifyedIndex] = useState<number | null>(null);
+
   const [isLoading, setIsLoading] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
   const [isInputDisabled, setIsInputDisabled] = useState<boolean>(false);
 
   const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
+    setChangedIndex(null);
+    setModifyedIndex(null);
+
     event.preventDefault();
     setIsLoading(true);
     setIsButtonDisabled(true);
     setIsInputDisabled(true);
-    await turnOverCircles(str, setCircles);
+
+    let symbols = str;
+    setCircles(convertStringToCircles(symbols));
+    await delay(1000);
+
+    const midIndex = Math.floor(str.length / 2);
+    for (let i = 0; i <= midIndex; i++) {
+      setChangedIndex(i);
+      await delay(1000);
+      setModifyedIndex(i);
+      symbols = mirrorSymbols(symbols, i);
+      setCircles(convertStringToCircles(symbols));
+    }
+
     setIsButtonDisabled(false);
     setIsInputDisabled(false);
     setStr('');
@@ -58,12 +81,22 @@ export const StringComponent: React.FC = () => {
       </form>
       {circles.length > 0 && (
         <div className={styles.scheme}>
-          {circles.map((circle) => {
+          {circles.map((circle, index) => {
             return (
               <Circle
                 letter={circle.letter}
-                key={circle.index}
-                state={circle.state}
+                key={index}
+                state={
+                  modifyedIndex !== null &&
+                  (index <= modifyedIndex ||
+                    index >= circles.length - 1 - modifyedIndex)
+                    ? ElementStates.Modified
+                    : changedIndex !== null &&
+                      (index === changedIndex ||
+                        index === circles.length - 1 - changedIndex)
+                    ? ElementStates.Changing
+                    : ElementStates.Default
+                }
               />
             );
           })}
