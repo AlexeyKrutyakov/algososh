@@ -1,41 +1,43 @@
-import { ColumnProps } from '../components/ui/column/column';
-import { SHORT_DELAY_IN_MS } from '../constants/delays';
 import { Direction } from '../types/direction';
-import { ElementStates } from '../types/element-states';
-import { delay } from './delay';
 
-export default async function sortBySelection(
-  columns: ColumnProps[],
-  setColumns: React.Dispatch<React.SetStateAction<any>>,
+const swapElementsByDirecion = (
+  arr: number[],
+  index: number,
   direction: Direction
-): Promise<void> {
-  for (let i = 0; i < columns.length; i++) {
-    let minIndex = i;
-    let min = columns[i].index;
-    columns[i].state = ElementStates.Changing;
-    setColumns([...columns]);
-
-    for (let j = i + 1; j < columns.length; j++) {
-      columns[j].state = ElementStates.Changing;
-      setColumns([...columns]);
-      if (
-        (direction === Direction.Ascending && columns[j].index < min) ||
-        (direction === Direction.Descending && columns[j].index > min)
-      ) {
-        min = columns[j].index;
-        minIndex = j;
-      }
-      await delay(SHORT_DELAY_IN_MS);
-      columns[j].state = ElementStates.Default;
-      setColumns([...columns]);
+): void => {
+  let minIndex = index;
+  let min = arr[minIndex];
+  for (let j = index + 1; j < arr.length; j++) {
+    if (
+      (direction === Direction.Ascending && arr[j] < min) ||
+      (direction === Direction.Descending && arr[j] > min)
+    ) {
+      min = arr[j];
+      minIndex = j;
     }
-
-    if (minIndex !== i) {
-      columns[i].state = ElementStates.Default;
-      [columns[i], columns[minIndex]] = [columns[minIndex], columns[i]];
-      setColumns([...columns]);
-    }
-    columns[i].state = ElementStates.Modified;
-    setColumns([...columns]);
   }
-}
+
+  if (minIndex !== index) {
+    [arr[index], arr[minIndex]] = [arr[minIndex], arr[index]];
+  }
+};
+
+const sortBySelection = (
+  arr: number[],
+  direction: Direction,
+  index?: number
+): number[] => {
+  const resultArray = [...arr];
+
+  if (index === undefined) {
+    for (let i = 0; i < resultArray.length; i++) {
+      swapElementsByDirecion(resultArray, i, direction);
+    }
+  } else {
+    swapElementsByDirecion(resultArray, index, direction);
+  }
+
+  return resultArray;
+};
+
+export default sortBySelection;

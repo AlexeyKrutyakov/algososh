@@ -10,7 +10,7 @@ import { SHORT_DELAY_IN_MS } from '../../constants/delays';
 import createRandomArr from '../../utils/create-random-arr';
 import sortBySelection from '../../utils/sort-by-selection';
 import { ElementStates } from '../../types/element-states';
-import sortByBubble from '../../utils/sort-by-bubble';
+// import sortByBubble from '../../utils/sort-by-bubble'; // todo refactor
 
 export const SortingPage: React.FC = () => {
   const [isDisabled, setIsDisabled] = useState(false);
@@ -38,21 +38,22 @@ export const SortingPage: React.FC = () => {
   };
 
   const handleSortClick = async (direction: Direction) => {
-    if (direction === Direction.Ascending) setIsAscendSortingRunning(true);
-    if (direction === Direction.Descending) setIsDescendSortingRunning(true);
-    setIsDisabled(true);
-
-    !isBubbleTypeActive &&
-      (await sortBySelection(columns, setColumns, direction));
-    isBubbleTypeActive && (await sortByBubble(columns, setColumns, direction));
-
-    if (direction === Direction.Ascending) setIsAscendSortingRunning(false);
-    if (direction === Direction.Descending) setIsDescendSortingRunning(false);
-    setIsDisabled(false);
+    // if (direction === Direction.Ascending) setIsAscendSortingRunning(true);
+    // if (direction === Direction.Descending) setIsDescendSortingRunning(true);
+    // setIsDisabled(true);
+    // !isBubbleTypeActive &&
+    //   (await sortBySelection(columns, setColumns, direction));
+    // isBubbleTypeActive && (await sortByBubble(columns, setColumns, direction));
+    // if (direction === Direction.Ascending) setIsAscendSortingRunning(false);
+    // if (direction === Direction.Descending) setIsDescendSortingRunning(false);
+    // setIsDisabled(false);
+    !isBubbleTypeActive && setNumbers(sortBySelection(numbers, direction, 1)); // todo add loop with index
+    // todo add animation
   };
 
   const handleNewArrayClick = () => {
     setNumbers(createRandomArr(3, 17, 1, 100));
+    setColumns(createDefaultColumns(numbers));
   };
 
   const wait = async () => {
@@ -62,6 +63,7 @@ export const SortingPage: React.FC = () => {
   };
 
   useEffect(() => {
+    // todo change function to createColumnsFromNumbers(numbers, changingIndex, modifiedIndex);
     setColumns(createDefaultColumns(numbers));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [numbers]);
@@ -113,9 +115,14 @@ export const SortingPage: React.FC = () => {
         </div>
       </nav>
       <div className={styles.scheme}>
-        {columns.map((column, ind) => (
-          <Column index={column.index} key={ind} state={column.state} />
-        ))}
+        {columns.length > 0 &&
+          columns.map((column, ind) => (
+            <Column
+              index={column.index}
+              key={ind}
+              state={column.state}
+            />
+          ))}
       </div>
     </SolutionLayout>
   );
