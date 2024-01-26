@@ -46,11 +46,8 @@ describe('Рендеринг кнопки', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  it('Нажатие на кнопку вызывает коллбэк', () => {
-    let testText = '';
-    const callback = () => {
-      testText = 'correct';
-    };
+  it('Нажатие на кнопку корректно вызывает коллбэк', () => {
+    const callback = jest.fn();
 
     render(
       <Button
@@ -62,8 +59,8 @@ describe('Рендеринг кнопки', () => {
 
     const btn = screen.getByText(/Развернуть/i);
 
+    expect(callback).toBeCalledTimes(0);
     fireEvent.click(btn);
-
-    expect(testText).toBe('correct');
+    expect(callback).toBeCalledTimes(1);
   });
 });
