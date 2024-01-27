@@ -1,4 +1,4 @@
-import mirrorSymbols from './mirror-symbols';
+import { mirrorSymbols } from './mirror-symbols';
 
 describe('Тест зеркального отражения символов', () => {
   it('Разворот строки с четным количеством символов', () => {
