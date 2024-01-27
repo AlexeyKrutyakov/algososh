@@ -61,7 +61,7 @@ export const SortingPage: React.FC = () => {
         for (let j = i + 1; j < numbers.length; j++) {
           setChangingIndexList([i, j]);
 
-          await delay(500);
+          await delay(SHORT_DELAY_IN_MS);
         }
 
         // set numbers after one step sorting
@@ -80,7 +80,7 @@ export const SortingPage: React.FC = () => {
           setChangingIndexList([j, j + 1]);
           arr = sortByBubble(arr, direction, j);
           setNumbers(arr);
-          await delay(500);
+          await delay(SHORT_DELAY_IN_MS);
         }
         setModifiedIndex(i);
       }
