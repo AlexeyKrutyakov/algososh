@@ -11,3 +11,5 @@ export * from './set-element-state-with-delay';
 export * from './manipulate-with-tail';
 export * from './manipulate-with-index';
 export * from './render-animation';
+export * from './sort-by-bubble';
+export * from './sort-by-selection';

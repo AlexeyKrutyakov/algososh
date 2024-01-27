@@ -8,10 +8,9 @@ import { delay } from '../../utils/delay';
 import { Column, ColumnProps } from '../ui/column/column';
 import { SHORT_DELAY_IN_MS } from '../../constants/delays';
 import createRandomArr from '../../utils/create-random-arr';
-import sortBySelection from '../../utils/sort-by-selection';
 import { ElementStates } from '../../types/element-states';
-import setStateWithDelay from '../../utils/set-state-with-delay';
-// import sortByBubble from '../../utils/sort-by-bubble'; // todo refactor
+import { sortBySelection } from '../../utils';
+import { sortByBubble } from '../../utils';
 
 export const SortingPage: React.FC = () => {
   const [isDisabled, setIsDisabled] = useState(false);
@@ -54,6 +53,7 @@ export const SortingPage: React.FC = () => {
     setIsDisabled(true);
 
     if (!isBubbleTypeActive) {
+      // sort by selection
       let arr: number[] = numbers;
       for (let i = 0; i < numbers.length; i++) {
         // animation of one step sorting
@@ -71,8 +71,20 @@ export const SortingPage: React.FC = () => {
         setChangingIndexList([i]);
         setModifiedIndex(i);
       }
+    } else {
+      // sort by bubble
+      let arr: number[] = numbers;
+      for (let i = numbers.length - 1; i >= 0; i--) {
+        for (let j = 0; j <= i - 1; j++) {
+          setChangingIndexList([j, j + 1]);
+          arr = sortByBubble(arr, direction, j);
+          setNumbers(arr);
+          await delay(500);
+        }
+        setModifiedIndex(i);
+      }
+      setNumbers(arr);
     }
-    // isBubbleTypeActive && (await sortByBubble(columns, setColumns, direction));
 
     // unblock controls
     if (direction === Direction.Ascending) {
@@ -97,7 +109,6 @@ export const SortingPage: React.FC = () => {
   };
 
   useEffect(() => {
-    // todo change function to createColumnsFromNumbers(numbers, changingIndex, modifiedIndex);
     setColumns(createColumnsFromArray(numbers));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [numbers]);
@@ -155,7 +166,13 @@ export const SortingPage: React.FC = () => {
               index={column.index}
               key={ind}
               state={
-                modifiedIndex !== null && ind <= modifiedIndex
+                !isBubbleTypeActive
+                  ? modifiedIndex !== null && ind <= modifiedIndex
+                    ? ElementStates.Modified
+                    : changingIndexList.indexOf(ind) !== -1
+                    ? ElementStates.Changing
+                    : column.state
+                  : modifiedIndex !== null && ind >= modifiedIndex
                   ? ElementStates.Modified
                   : changingIndexList.indexOf(ind) !== -1
                   ? ElementStates.Changing

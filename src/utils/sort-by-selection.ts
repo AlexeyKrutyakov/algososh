@@ -1,5 +1,4 @@
 import { Direction } from '../types/direction';
-import { delay } from './delay';
 
 const swapElementsByDirecion = (
   arr: number[],
@@ -23,7 +22,7 @@ const swapElementsByDirecion = (
   }
 };
 
-const sortBySelection = (
+export const sortBySelection = (
   arr: number[],
   direction: Direction,
   index?: number
@@ -40,5 +39,3 @@ const sortBySelection = (
 
   return resultArray;
 };
-
-export default sortBySelection;
