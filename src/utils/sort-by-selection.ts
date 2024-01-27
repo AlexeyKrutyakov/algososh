@@ -1,4 +1,5 @@
 import { Direction } from '../types/direction';
+import { delay } from './delay';
 
 const swapElementsByDirecion = (
   arr: number[],

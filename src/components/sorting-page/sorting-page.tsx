@@ -10,6 +10,7 @@ import { SHORT_DELAY_IN_MS } from '../../constants/delays';
 import createRandomArr from '../../utils/create-random-arr';
 import sortBySelection from '../../utils/sort-by-selection';
 import { ElementStates } from '../../types/element-states';
+import setStateWithDelay from '../../utils/set-state-with-delay';
 // import sortByBubble from '../../utils/sort-by-bubble'; // todo refactor
 
 export const SortingPage: React.FC = () => {
@@ -17,17 +18,21 @@ export const SortingPage: React.FC = () => {
   const [isBubbleTypeActive, setIsBubbleTypeActive] = useState(false);
   const [isAscendSortingRunning, setIsAscendSortingRunning] = useState(false);
   const [isDescendSortingRunning, setIsDescendSortingRunning] = useState(false);
-  const [numbers, setNumbers] = useState<number[]>(
-    createRandomArr(3, 17, 1, 100)
-  );
+  const [numbers, setNumbers] = useState(createRandomArr(3, 17, 1, 100));
   const [columns, setColumns] = useState<ColumnProps[]>([]);
+  const [changingIndexList, setChangingIndexList] = useState<number[]>([]);
+  const [modifiedIndex, setModifiedIndex] = useState<number | null>(null);
 
-  const createDefaultColumns = (numbers: number[]): ColumnProps[] => {
+  const setColumnsColorAsDefault = (): void => {
+    setChangingIndexList([]);
+    setModifiedIndex(null);
+  };
+
+  const createColumnsFromArray = (arr: number[]): ColumnProps[] => {
     const columns: ColumnProps[] = [];
-    for (let i = 0; i < numbers.length; i++) {
+    for (let i = 0; i < arr.length; i++) {
       columns.push({
-        index: numbers[i],
-        state: ElementStates.Default,
+        index: arr[i],
       });
     }
     return columns;
@@ -38,22 +43,51 @@ export const SortingPage: React.FC = () => {
   };
 
   const handleSortClick = async (direction: Direction) => {
-    // if (direction === Direction.Ascending) setIsAscendSortingRunning(true);
-    // if (direction === Direction.Descending) setIsDescendSortingRunning(true);
-    // setIsDisabled(true);
-    // !isBubbleTypeActive &&
-    //   (await sortBySelection(columns, setColumns, direction));
+    setColumnsColorAsDefault();
+
+    // block controls
+    if (direction === Direction.Ascending) {
+      setIsAscendSortingRunning(true);
+    } else {
+      setIsDescendSortingRunning(true);
+    }
+    setIsDisabled(true);
+
+    if (!isBubbleTypeActive) {
+      let arr: number[] = numbers;
+      for (let i = 0; i < numbers.length; i++) {
+        // animation of one step sorting
+        for (let j = i + 1; j < numbers.length; j++) {
+          setChangingIndexList([i, j]);
+
+          await delay(500);
+        }
+
+        // set numbers after one step sorting
+        arr = sortBySelection(arr, direction, i);
+        setNumbers(arr);
+
+        // paint columns
+        setChangingIndexList([i]);
+        setModifiedIndex(i);
+      }
+    }
     // isBubbleTypeActive && (await sortByBubble(columns, setColumns, direction));
-    // if (direction === Direction.Ascending) setIsAscendSortingRunning(false);
-    // if (direction === Direction.Descending) setIsDescendSortingRunning(false);
-    // setIsDisabled(false);
-    !isBubbleTypeActive && setNumbers(sortBySelection(numbers, direction, 1)); // todo add loop with index
-    // todo add animation
+
+    // unblock controls
+    if (direction === Direction.Ascending) {
+      setIsAscendSortingRunning(false);
+    } else {
+      setIsDescendSortingRunning(false);
+    }
+    setIsDisabled(false);
   };
 
   const handleNewArrayClick = () => {
+    setColumnsColorAsDefault();
+
     setNumbers(createRandomArr(3, 17, 1, 100));
-    setColumns(createDefaultColumns(numbers));
+    setColumns(createColumnsFromArray(numbers));
   };
 
   const wait = async () => {
@@ -64,7 +98,7 @@ export const SortingPage: React.FC = () => {
 
   useEffect(() => {
     // todo change function to createColumnsFromNumbers(numbers, changingIndex, modifiedIndex);
-    setColumns(createDefaultColumns(numbers));
+    setColumns(createColumnsFromArray(numbers));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [numbers]);
 
@@ -120,7 +154,13 @@ export const SortingPage: React.FC = () => {
             <Column
               index={column.index}
               key={ind}
-              state={column.state}
+              state={
+                modifiedIndex !== null && ind <= modifiedIndex
+                  ? ElementStates.Modified
+                  : changingIndexList.indexOf(ind) !== -1
+                  ? ElementStates.Changing
+                  : column.state
+              }
             />
           ))}
       </div>
