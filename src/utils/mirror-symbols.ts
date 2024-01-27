@@ -1,6 +1,6 @@
 import { swapArrElements } from './swap-arr-elements';
 
-export default function mirrorSymbols(str: string, index?: number): string {
+export function mirrorSymbols(str: string, index?: number): string {
   let strArr = str.split('');
   const len = strArr.length;
   const midIndex = Math.floor(len / 2);

@@ -1,6 +1,6 @@
 import { CircleProps } from '../components/ui/circle/circle';
 
-const convertStringToCircles = (str: string): CircleProps[] => {
+export const convertStringToCircles = (str: string): CircleProps[] => {
   const circles: CircleProps[] = [];
   for (let i = 0; i < str.length; i++) {
     circles.push({
@@ -9,5 +9,3 @@ const convertStringToCircles = (str: string): CircleProps[] => {
   }
   return circles;
 };
-
-export default convertStringToCircles;

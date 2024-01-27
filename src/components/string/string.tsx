@@ -1,13 +1,11 @@
 import styles from './string.module.css';
 import React, { useEffect, useState } from 'react';
-import { SolutionLayout } from '../ui/solution-layout/solution-layout';
-import { Input } from '../ui/input/input';
 import { Button } from '../ui/button/button';
 import { Circle, CircleProps } from '../ui/circle/circle';
-import mirrorSymbols from '../../utils/mirror-symbols';
-import convertStringToCircles from '../../utils/convert-string-to-circles';
-import { delay } from '../../utils';
+import { delay, convertStringToCircles, mirrorSymbols } from '../../utils';
 import { ElementStates } from '../../types';
+import { Input } from '../ui/input/input';
+import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 
 export const StringComponent: React.FC = () => {
   const [str, setStr] = useState<string>('');
