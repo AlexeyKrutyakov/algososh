@@ -38,6 +38,7 @@ export const SortingPage: React.FC = () => {
   };
 
   const handleRadioChange = () => {
+    setColumnsColorAsDefault();
     setIsBubbleTypeActive(!isBubbleTypeActive);
   };
 
