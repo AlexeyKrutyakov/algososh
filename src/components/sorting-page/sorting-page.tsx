@@ -1,16 +1,17 @@
 import styles from './sorting-page.module.css';
 import React, { useEffect, useState } from 'react';
-import { SolutionLayout } from '../ui/solution-layout/solution-layout';
-import { RadioInput } from '../ui/radio-input/radio-input';
 import { Button } from '../ui/button/button';
-import { Direction } from '../../types/direction';
-import { delay } from '../../utils/delay';
 import { Column, ColumnProps } from '../ui/column/column';
+import { RadioInput } from '../ui/radio-input/radio-input';
+import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 import { SHORT_DELAY_IN_MS } from '../../constants/delays';
-import createRandomArr from '../../utils/create-random-arr';
-import { ElementStates } from '../../types/element-states';
-import { sortBySelection } from '../../utils';
-import { sortByBubble } from '../../utils';
+import { Direction, ElementStates } from '../../types';
+import {
+  delay,
+  sortByBubble,
+  createRandomArr,
+  sortBySelection,
+} from '../../utils';
 
 export const SortingPage: React.FC = () => {
   const [isDisabled, setIsDisabled] = useState(false);
