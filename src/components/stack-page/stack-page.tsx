@@ -89,27 +89,31 @@ export const StackPage: React.FC = () => {
     <SolutionLayout title="Стек">
       <nav className={styles.controls}>
         <Input
+          data-testid="input-for-string"
           name="text"
           value={str}
           extraClass={styles.input}
           isLimitText={true}
           maxLength={4}
-          onChange={event => setStr(event.currentTarget.value)}
+          onChange={(event) => setStr(event.currentTarget.value)}
           disabled={isControlsDisabled}
         />
         <Button
+          data-testid="add-button"
           text="Добавить"
           onClick={addElement}
           isLoader={isAddingRunning}
           disabled={str === '' || isControlsDisabled}
         />
         <Button
+          data-testid="delete-button"
           text="Удалить"
           onClick={deleteElement}
           isLoader={isDeletingRunning}
           disabled={stack.getLength() === 0 || isControlsDisabled}
         />
         <Button
+          data-testid="clear-button"
           extraClass={styles.button_last}
           text="Очистить"
           onClick={clear}
