@@ -12,15 +12,17 @@ describe('Проверка корректности работы разворо�
       .should('have.css', 'border', `4px solid ${borderColor}`);
   };
 
-  it('Если инпут не заполнен, кнопка "Развернуть" недоступна', () => {
+  beforeEach(() => {
     cy.visit('/recursion');
+  });
+
+  it('Если инпут не заполнен, кнопка "Развернуть" недоступна', () => {
     cy.get('[data-testid="input-for-string"]').should('be.empty');
     cy.get('[data-testid="submit-button"]').should('be.disabled');
   });
   it('Строка разворачивается корректно, анимация отрисовывается корректно', () => {
     cy.clock();
 
-    cy.visit('/recursion');
     cy.get('[data-testid="input-for-string"]').type('cat');
     cy.get('[data-testid="submit-button"]').click();
 
