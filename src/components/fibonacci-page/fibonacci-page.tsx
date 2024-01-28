@@ -30,7 +30,7 @@ export const FibonacciPage: React.FC = () => {
       const fibonacciNumber = calculateFibonacciNumber(i);
 
       await delay(SHORT_DELAY_IN_MS);
-      setfibonacciNumbers(fibonacciNumbers => [
+      setfibonacciNumbers((fibonacciNumbers) => [
         ...fibonacciNumbers,
         fibonacciNumber,
       ]);
@@ -62,16 +62,18 @@ export const FibonacciPage: React.FC = () => {
         onSubmit={submitHandler}
       >
         <Input
+          data-testid="input-for-string"
           name="stringInput"
           type="number"
           max={maxNumber}
           isLimitText={true}
           value={str}
           extraClass={styles.input}
-          onChange={event => setStr(event.currentTarget.value)}
+          onChange={(event) => setStr(event.currentTarget.value)}
           disabled={isInputDisabled}
         />
         <Button
+          data-testid="submit-button"
           isLoader={isLoading}
           text="Рассчитать"
           type="submit"
