@@ -35,8 +35,10 @@ describe('Проверка корректности работы стека', ()
   });
 
   it('Проверка корректности добавления элементов в стек', () => {
-    cy.get('[data-testid="input-for-string"]').as('input');
     cy.get('[data-testid="add-button"]').as('add-button');
+    cy.get('[data-testid="delete-button"]').as('delete-button');
+    cy.get('[data-testid="clear-button"]').as('clear-button');
+    cy.get('[data-testid="input-for-string"]').as('input');
 
     cy.clock();
 
@@ -62,6 +64,11 @@ describe('Проверка корректности работы стека', ()
     cy.get('@input').type('2');
     cy.get('@add-button').click();
 
+    cy.get('@add-button').should('be.disabled');
+    cy.get('@delete-button').should('be.disabled');
+    cy.get('@clear-button').should('be.disabled');
+    cy.get('@input').should('be.disabled');
+
     cy.get('@circles')
       .should('have.length', 2)
       .each(($circle, index) => {
@@ -80,5 +87,60 @@ describe('Проверка корректности работы стека', ()
           checkBorderColor($circle, defaultColor);
         }
       });
+  });
+
+  it('Проверка корректности удаления элементов из стека', () => {
+    cy.get('[data-testid="add-button"]').as('add-button');
+    cy.get('[data-testid="delete-button"]').as('delete-button');
+    cy.get('[data-testid="clear-button"]').as('clear-button');
+    cy.get('[data-testid="input-for-string"]').as('input');
+
+    cy.clock();
+
+    cy.get('@input').type('1');
+    cy.get('@add-button').click();
+
+    cy.tick(1000);
+
+    cy.get('@input').type('2');
+    cy.get('@add-button').click();
+
+    cy.tick(1000);
+
+    cy.get('[class*="scheme"]').get('[class*="circle_content"]').as('circles');
+
+    cy.get('@delete-button').click();
+
+    cy.get('@circles').each(($circle, index) => {
+      if (index === 0) {
+        checkBorderColor($circle, defaultColor);
+      }
+
+      if (index === 1) {
+        checkBorderColor($circle, changingColor);
+      }
+    });
+
+    cy.tick(500);
+
+    cy.get('@circles')
+      .should('have.length', 1)
+      .each(($circle, index) => {
+        if (index === 0) {
+          checkText(getHead($circle), 'top');
+        }
+      });
+
+    cy.get('@delete-button').click();
+
+    cy.get('@circles').each(($circle, index) => {
+      if (index === 0) {
+        checkBorderColor($circle, changingColor);
+      }
+    });
+
+    cy.tick(500);
+
+    cy.get('@circles').should('have.length', 0);
   });
 });

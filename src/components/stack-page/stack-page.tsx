@@ -42,12 +42,13 @@ export const StackPage: React.FC = () => {
 
     setIsAddingRunning(true);
     setIsControlsDisabled(true);
+    console.log('isAddingRunning', isAddingRunning);
 
     // add element
     stack.push(str);
     setCircles(createCircles(stack));
 
-    renderAnimation(setActiveCircleState);
+    await renderAnimation(setActiveCircleState);
 
     setIsControlsDisabled(false);
     setIsAddingRunning(false);
@@ -61,7 +62,7 @@ export const StackPage: React.FC = () => {
     setIsDeletingRunning(true);
     setIsControlsDisabled(true);
 
-    renderAnimation(setActiveCircleState);
+    await renderAnimation(setActiveCircleState);
 
     // delete element
     stack.pop();
