@@ -1,6 +1,13 @@
 /// <reference types="Cypress" />
 
 import {
+  CIRCLES_SELECTOR,
+  CIRCLE_SELECTOR,
+  INPUT_SELECTOR,
+  SUBMIT_BTN_SELECTOR,
+} from '../../src/constants/test-selectors';
+
+import {
   DEFAULT_BORDER_STYLE,
   CHANGING_BORDER_STYLE,
   MODIFIED_BORDER_STYLE,
@@ -11,7 +18,7 @@ describe('Проверка корректности работы разворо�
     cy.wrap(element).should('have.text', `${letter}`);
   const checkBorderColor = (element, borderStyle) => {
     cy.wrap(element)
-      .children('[class*="circle_circle"]')
+      .children(CIRCLE_SELECTOR)
       .should('have.css', 'border', `${borderStyle}`);
   };
 
@@ -20,16 +27,16 @@ describe('Проверка корректности работы разворо�
   });
 
   it('Если инпут не заполнен, кнопка "Развернуть" недоступна', () => {
-    cy.get('[data-testid="input-for-string"]').should('be.empty');
-    cy.get('[data-testid="submit-button"]').should('be.disabled');
+    cy.get(INPUT_SELECTOR).should('be.empty');
+    cy.get(SUBMIT_BTN_SELECTOR).should('be.disabled');
   });
   it('Строка разворачивается корректно, анимация отрисовывается корректно', () => {
     cy.clock();
 
-    cy.get('[data-testid="input-for-string"]').type('cat');
-    cy.get('[data-testid="submit-button"]').click();
+    cy.get(INPUT_SELECTOR).type('cat');
+    cy.get(SUBMIT_BTN_SELECTOR).click();
 
-    cy.get('[data-testid="scheme"]').children().as('circles');
+    cy.get(CIRCLES_SELECTOR).children().as('circles');
 
     cy.get('@circles')
       .should('have.length', 3)
@@ -101,6 +108,6 @@ describe('Проверка корректности работы разворо�
       }
     });
 
-    cy.get('[data-testid="input-for-string"]').should('be.empty');
+    cy.get(INPUT_SELECTOR).should('be.empty');
   });
 });
