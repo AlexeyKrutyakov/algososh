@@ -8,8 +8,9 @@ import {
 } from '../../src/constants/test-selectors';
 
 import { FIBONACCI_ARRAY } from '../../src/constants/mock-data';
+import { CHECK } from '../../src/constants/test-names';
 
-describe('Проверка корректности работы страницы "Последовательность Фибоначчи"', () => {
+describe(`${CHECK.FIBONACCI}`, () => {
   const checkCirclesLength = (elements, length) => {
     cy.get(elements).should('have.length', length);
   };
@@ -20,12 +21,12 @@ describe('Проверка корректности работы страниц�
     cy.visit('/fibonacci');
   });
 
-  it('Если инпут не заполнен, кнопка "Развернуть" недоступна', () => {
+  it(`${CHECK.SUBMIT_DISABLE_IF_INPUT_IS_EMPTY}`, () => {
     cy.get(INPUT_SELECTOR).should('be.empty');
     cy.get(SUBMIT_BTN_SELECTOR).should('be.disabled');
   });
 
-  it('Числа генерируются корректно', () => {
+  it(`${CHECK.FIBONACCI_SERIES_IS_CORRECT}`, () => {
     cy.clock();
 
     cy.get(INPUT_SELECTOR).type(`${FIBONACCI_ARRAY.length - 1}`);
