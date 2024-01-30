@@ -13,7 +13,9 @@ import {
   MODIFIED_BORDER_STYLE,
 } from '../../src/constants/styles';
 
-describe('Проверка корректности работы разворота строки', () => {
+import { CHECK } from '../../src/constants/test-names';
+
+describe(`${CHECK.STRING}`, () => {
   const checkLetter = (element, letter) =>
     cy.wrap(element).should('have.text', `${letter}`);
   const checkBorderColor = (element, borderStyle) => {
@@ -26,11 +28,11 @@ describe('Проверка корректности работы разворо�
     cy.visit('/recursion');
   });
 
-  it('Если инпут не заполнен, кнопка "Развернуть" недоступна', () => {
+  it(`${CHECK.SUBMIT_DISABLE_IF_INPUT_IS_EMPTY}`, () => {
     cy.get(INPUT_SELECTOR).should('be.empty');
     cy.get(SUBMIT_BTN_SELECTOR).should('be.disabled');
   });
-  it('Строка разворачивается корректно, анимация отрисовывается корректно', () => {
+  it(`${CHECK.STRING_REVERSE_IS_CORRECT}`, () => {
     cy.clock();
 
     cy.get(INPUT_SELECTOR).type('cat');
