@@ -1,13 +1,15 @@
 /// <reference types="Cypress" />
 
-describe('Проверка корректности работы стека', () => {
-  const defaultColor = 'rgb(0, 50, 255)';
-  const changingColor = 'rgb(210, 82, 225)';
+import {
+  DEFAULT_BORDER_STYLE,
+  CHANGING_BORDER_STYLE,
+} from '../../src/constants/styles';
 
-  const checkBorderColor = (element, borderColor) => {
+describe('Проверка корректности работы стека', () => {
+  const checkBorderColor = (element, borderStyle) => {
     cy.wrap(element)
       .children('[class*="circle_circle"]')
-      .should('have.css', 'border', `4px solid ${borderColor}`);
+      .should('have.css', 'border', `${borderStyle}`);
   };
 
   const getLetter = (circle) => {
@@ -51,13 +53,13 @@ describe('Проверка корректности работы стека', ()
       .should('have.length', 1)
       .each(($circle, index) => {
         if (index === 0) {
-          checkBorderColor($circle, changingColor);
+          checkBorderColor($circle, CHANGING_BORDER_STYLE);
           checkText(getLetter($circle), '1');
           checkText(getHead($circle), 'top');
 
           cy.tick(500);
 
-          checkBorderColor($circle, defaultColor);
+          checkBorderColor($circle, DEFAULT_BORDER_STYLE);
         }
       });
 
@@ -73,18 +75,18 @@ describe('Проверка корректности работы стека', ()
       .should('have.length', 2)
       .each(($circle, index) => {
         if (index === 0) {
-          checkBorderColor($circle, defaultColor);
+          checkBorderColor($circle, DEFAULT_BORDER_STYLE);
           checkText(getLetter($circle), '1');
           cy.wrap(getHead($circle)).should('be.empty');
         }
         if (index === 1) {
-          checkBorderColor($circle, changingColor);
+          checkBorderColor($circle, CHANGING_BORDER_STYLE);
           checkText(getLetter($circle), '2');
           checkText(getHead($circle), 'top');
 
           cy.tick(500);
 
-          checkBorderColor($circle, defaultColor);
+          checkBorderColor($circle, DEFAULT_BORDER_STYLE);
         }
       });
   });
@@ -113,11 +115,11 @@ describe('Проверка корректности работы стека', ()
 
     cy.get('@circles').each(($circle, index) => {
       if (index === 0) {
-        checkBorderColor($circle, defaultColor);
+        checkBorderColor($circle, DEFAULT_BORDER_STYLE);
       }
 
       if (index === 1) {
-        checkBorderColor($circle, changingColor);
+        checkBorderColor($circle, CHANGING_BORDER_STYLE);
       }
     });
 
@@ -135,7 +137,7 @@ describe('Проверка корректности работы стека', ()
 
     cy.get('@circles').each(($circle, index) => {
       if (index === 0) {
-        checkBorderColor($circle, changingColor);
+        checkBorderColor($circle, CHANGING_BORDER_STYLE);
       }
     });
 

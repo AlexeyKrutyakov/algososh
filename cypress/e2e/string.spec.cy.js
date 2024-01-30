@@ -1,15 +1,18 @@
 /// <reference types="Cypress" />
 
+import {
+  DEFAULT_BORDER_STYLE,
+  CHANGING_BORDER_STYLE,
+  MODIFIED_BORDER_STYLE,
+} from '../../src/constants/styles';
+
 describe('Проверка корректности работы разворота строки', () => {
-  const defaultColor = 'rgb(0, 50, 255)';
-  const changingColor = 'rgb(210, 82, 225)';
-  const modifiedColor = 'rgb(127, 224, 81)';
   const checkLetter = (element, letter) =>
     cy.wrap(element).should('have.text', `${letter}`);
-  const checkBorderColor = (element, borderColor) => {
+  const checkBorderColor = (element, borderStyle) => {
     cy.wrap(element)
       .children('[class*="circle_circle"]')
-      .should('have.css', 'border', `4px solid ${borderColor}`);
+      .should('have.css', 'border', `${borderStyle}`);
   };
 
   beforeEach(() => {
@@ -31,7 +34,7 @@ describe('Проверка корректности работы разворо�
     cy.get('@circles')
       .should('have.length', 3)
       .each(($circle, index) => {
-        checkBorderColor($circle, defaultColor);
+        checkBorderColor($circle, DEFAULT_BORDER_STYLE);
 
         if (index === 0) {
           checkLetter($circle, 'c');
@@ -51,15 +54,15 @@ describe('Проверка корректности работы разворо�
     cy.get('@circles').each(($circle, index) => {
       if (index === 0) {
         checkLetter($circle, 'c');
-        checkBorderColor($circle, changingColor);
+        checkBorderColor($circle, CHANGING_BORDER_STYLE);
       }
       if (index === 1) {
         checkLetter($circle, 'a');
-        checkBorderColor($circle, defaultColor);
+        checkBorderColor($circle, DEFAULT_BORDER_STYLE);
       }
       if (index === 2) {
         checkLetter($circle, 't');
-        checkBorderColor($circle, changingColor);
+        checkBorderColor($circle, CHANGING_BORDER_STYLE);
       }
     });
 
@@ -68,22 +71,22 @@ describe('Проверка корректности работы разворо�
     cy.get('@circles').each(($circle, index) => {
       if (index === 0) {
         checkLetter($circle, 't');
-        checkBorderColor($circle, modifiedColor);
+        checkBorderColor($circle, MODIFIED_BORDER_STYLE);
       }
       if (index === 1) {
         checkLetter($circle, 'a');
-        checkBorderColor($circle, changingColor);
+        checkBorderColor($circle, CHANGING_BORDER_STYLE);
       }
       if (index === 2) {
         checkLetter($circle, 'c');
-        checkBorderColor($circle, modifiedColor);
+        checkBorderColor($circle, MODIFIED_BORDER_STYLE);
       }
     });
 
     cy.tick(1000);
 
     cy.get('@circles').each(($circle, index) => {
-      checkBorderColor($circle, modifiedColor);
+      checkBorderColor($circle, MODIFIED_BORDER_STYLE);
 
       if (index === 0) {
         checkLetter($circle, 't');
