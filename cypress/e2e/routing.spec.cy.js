@@ -1,27 +1,29 @@
 /// <reference types="Cypress" />
 
-describe('Доступность перехода по страницам', () => {
-  it('Переход на страницу "Строка"', () => {
+import { CHECK } from '../../src/constants/test-names';
+
+describe(`${CHECK.ROUTING_AVAILABLE}`, () => {
+  it(`${CHECK.STRING_PAGE_VISIT}`, () => {
     cy.visit('/recursion');
   });
 
-  it('Переход на страницу "Последовательность Фибоначчи"', () => {
+  it(`${CHECK.FIBONACCI_PAGE_VISIT}`, () => {
     cy.visit('/fibonacci');
   });
 
-  it('Переход на страницу "Сортировка массива"', () => {
+  it(`${CHECK.SORT_ARRAY_PAGE_VISIT}`, () => {
     cy.visit('/sorting');
   });
 
-  it('Переход на страницу "Стек"', () => {
+  it(`${CHECK.STACK_PAGE_VISIT}`, () => {
     cy.visit('/stack');
   });
 
-  it('Переход на страницу "Очередь"', () => {
+  it(`${CHECK.QUEUE_PAGE_VISIT}`, () => {
     cy.visit('/queue');
   });
 
-  it('Переход на страницу "Связный список"', () => {
+  it(`${CHECK.LIST_PAGE_VISIT}`, () => {
     cy.visit('/list');
   });
 });
