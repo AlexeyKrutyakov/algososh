@@ -57,7 +57,7 @@ export const FibonacciPage: React.FC = () => {
   return (
     <SolutionLayout title="Последовательность Фибоначчи">
       <form
-        action="reverseWord"
+        action="fibonacci"
         className={styles.form}
         onSubmit={submitHandler}
       >
@@ -82,7 +82,10 @@ export const FibonacciPage: React.FC = () => {
         />
       </form>
       {fibonacciNumbers.length > 0 && (
-        <div className={styles.scheme}>
+        <div
+          className={styles.scheme}
+          data-testid="scheme"
+        >
           {fibonacciNumbers.map((number, index) => {
             return (
               <Circle

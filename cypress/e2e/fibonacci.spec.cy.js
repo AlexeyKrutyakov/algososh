@@ -1,7 +1,15 @@
 /// <reference types="Cypress" />
 
+import {
+  INPUT_SELECTOR,
+  SUBMIT_BTN_SELECTOR,
+  CIRCLES_SELECTOR,
+  CIRCLE_SELECTOR,
+} from '../../src/constants/test-selectors';
+
+import { FIBONACCI_ARRAY } from '../../src/constants/mock-data';
+
 describe('Проверка корректности работы страницы "Последовательность Фибоначчи"', () => {
-  const firstSevenMembersFibonacci = [0, 1, 1, 2, 3, 5, 8];
   const checkCirclesLength = (elements, length) => {
     cy.get(elements).should('have.length', length);
   };
@@ -13,31 +21,28 @@ describe('Проверка корректности работы страниц�
   });
 
   it('Если инпут не заполнен, кнопка "Развернуть" недоступна', () => {
-    cy.get('[data-testid="input-for-string').should('be.empty');
-    cy.get('[data-testid="submit-button"]').should('be.disabled');
+    cy.get(INPUT_SELECTOR).should('be.empty');
+    cy.get(SUBMIT_BTN_SELECTOR).should('be.disabled');
   });
 
   it('Числа генерируются корректно', () => {
     cy.clock();
 
-    cy.get('[data-testid="input-for-string"]').type('6');
-    cy.get('[data-testid="submit-button"]').click();
+    cy.get(INPUT_SELECTOR).type(`${FIBONACCI_ARRAY.length - 1}`);
+    cy.get(SUBMIT_BTN_SELECTOR).click();
 
     cy.tick(500);
-    cy.get('[class*="scheme"]').children().as('circles');
+    cy.get(CIRCLES_SELECTOR).children().as('circles');
 
-    for (let length = 1; length <= 7; length++) {
+    for (let length = 1; length <= FIBONACCI_ARRAY.length; length++) {
       checkCirclesLength('@circles', length);
       cy.tick(500);
     }
 
     cy.get('@circles').each(($circle, index) => {
-      for (let i = 0; i <= 6; i++) {
+      for (let i = 0; i < FIBONACCI_ARRAY.length; i++) {
         if (i === index) {
-          checkLetter(
-            $circle.children('[class*="circle_circle"]'),
-            firstSevenMembersFibonacci[i]
-          );
+          checkLetter($circle.children(CIRCLE_SELECTOR), FIBONACCI_ARRAY[i]);
         }
       }
     });
