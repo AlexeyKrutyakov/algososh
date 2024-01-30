@@ -6,7 +6,7 @@ import {
   CIRCLES_SELECTOR,
   CIRCLE_SELECTOR,
 } from '../../src/constants/test-selectors';
-
+import { SHORT_DELAY_IN_MS } from '../../src/constants/delays';
 import { FIBONACCI_ARRAY } from '../../src/constants/mock-data';
 import { CHECK } from '../../src/constants/test-names';
 
@@ -32,12 +32,12 @@ describe(`${CHECK.FIBONACCI}`, () => {
     cy.get(INPUT_SELECTOR).type(`${FIBONACCI_ARRAY.length - 1}`);
     cy.get(SUBMIT_BTN_SELECTOR).click();
 
-    cy.tick(500);
+    cy.tick(SHORT_DELAY_IN_MS);
     cy.get(CIRCLES_SELECTOR).children().as('circles');
 
     for (let length = 1; length <= FIBONACCI_ARRAY.length; length++) {
       checkCirclesLength('@circles', length);
-      cy.tick(500);
+      cy.tick(SHORT_DELAY_IN_MS);
     }
 
     cy.get('@circles').each(($circle, index) => {

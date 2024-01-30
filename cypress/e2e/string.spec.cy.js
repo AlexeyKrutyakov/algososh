@@ -15,6 +15,8 @@ import {
 
 import { CHECK } from '../../src/constants/test-names';
 
+import { DELAY_IN_MS } from '../../src/constants/delays';
+
 describe(`${CHECK.STRING}`, () => {
   const checkLetter = (element, letter) =>
     cy.wrap(element).should('have.text', `${letter}`);
@@ -58,7 +60,7 @@ describe(`${CHECK.STRING}`, () => {
         }
       });
 
-    cy.tick(1000);
+    cy.tick(DELAY_IN_MS);
 
     cy.get('@circles').each(($circle, index) => {
       if (index === 0) {
@@ -75,7 +77,7 @@ describe(`${CHECK.STRING}`, () => {
       }
     });
 
-    cy.tick(1000);
+    cy.tick(DELAY_IN_MS);
 
     cy.get('@circles').each(($circle, index) => {
       if (index === 0) {
@@ -92,7 +94,7 @@ describe(`${CHECK.STRING}`, () => {
       }
     });
 
-    cy.tick(1000);
+    cy.tick(DELAY_IN_MS);
 
     cy.get('@circles').each(($circle, index) => {
       checkBorderColor($circle, MODIFIED_BORDER_STYLE);

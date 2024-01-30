@@ -4,6 +4,7 @@ import {
   DEFAULT_BORDER_STYLE,
   CHANGING_BORDER_STYLE,
 } from '../../src/constants/styles';
+import { DELAY_IN_MS, SHORT_DELAY_IN_MS } from '../../src/constants/delays';
 
 describe('Проверка корректности работы стека', () => {
   const checkBorderColor = (element, borderStyle) => {
@@ -57,7 +58,7 @@ describe('Проверка корректности работы стека', ()
           checkText(getLetter($circle), '1');
           checkText(getHead($circle), 'top');
 
-          cy.tick(500);
+          cy.tick(SHORT_DELAY_IN_MS);
 
           checkBorderColor($circle, DEFAULT_BORDER_STYLE);
         }
@@ -84,7 +85,7 @@ describe('Проверка корректности работы стека', ()
           checkText(getLetter($circle), '2');
           checkText(getHead($circle), 'top');
 
-          cy.tick(500);
+          cy.tick(SHORT_DELAY_IN_MS);
 
           checkBorderColor($circle, DEFAULT_BORDER_STYLE);
         }
@@ -102,12 +103,12 @@ describe('Проверка корректности работы стека', ()
     cy.get('@input').type('1');
     cy.get('@add-button').click();
 
-    cy.tick(1000);
+    cy.tick(DELAY_IN_MS);
 
     cy.get('@input').type('2');
     cy.get('@add-button').click();
 
-    cy.tick(1000);
+    cy.tick(DELAY_IN_MS);
 
     cy.get('[class*="scheme"]').get('[class*="circle_content"]').as('circles');
 
@@ -123,7 +124,7 @@ describe('Проверка корректности работы стека', ()
       }
     });
 
-    cy.tick(500);
+    cy.tick(SHORT_DELAY_IN_MS);
 
     cy.get('@circles')
       .should('have.length', 1)
@@ -141,7 +142,7 @@ describe('Проверка корректности работы стека', ()
       }
     });
 
-    cy.tick(500);
+    cy.tick(SHORT_DELAY_IN_MS);
 
     cy.get('@circles').should('have.length', 0);
   });
@@ -156,7 +157,7 @@ describe('Проверка корректности работы стека', ()
     for (let i = 0; i < 3; i++) {
       cy.get('@input').type(`${i}`);
       cy.get('@add-button').click();
-      cy.tick(500);
+      cy.tick(SHORT_DELAY_IN_MS);
     }
 
     cy.get('[class*="scheme"]').get('[class*="circle_content"]').as('circles');
