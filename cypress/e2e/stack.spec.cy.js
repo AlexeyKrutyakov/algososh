@@ -143,4 +143,24 @@ describe('Проверка корректности работы стека', ()
 
     cy.get('@circles').should('have.length', 0);
   });
+
+  it('Проверка корректности очистки стека', () => {
+    cy.clock();
+
+    cy.get('[data-testid="add-button"]').as('add-button');
+    cy.get('[data-testid="clear-button"]').as('clear-button');
+    cy.get('[data-testid="input-for-string"]').as('input');
+
+    for (let i = 0; i < 3; i++) {
+      cy.get('@input').type(`${i}`);
+      cy.get('@add-button').click();
+      cy.tick(500);
+    }
+
+    cy.get('[class*="scheme"]').get('[class*="circle_content"]').as('circles');
+
+    cy.get('@clear-button').click();
+
+    cy.get('@circles').should('have.length', 0);
+  });
 });
