@@ -7,11 +7,8 @@ import {
 import { DELAY_IN_MS, SHORT_DELAY_IN_MS } from '../../src/constants/delays';
 
 import {
-  CIRCLES_SELECTOR,
+  CIRCLES_SCHEME_SELECTOR,
   CIRCLE_CONTAINER_SELECTOR,
-  CIRCLE_SELECTOR,
-  CIRCLE_LETTER_SELECTOR,
-  CIRCLE_HEAD_SELECTOR,
   INPUT_SELECTOR,
   ADD_BTN_SELECTOR,
   DELETE_BTN_SELECTOR,
@@ -20,30 +17,23 @@ import {
 
 import { CHECK } from '../../src/constants/test-names';
 
+import { checkCircleBorderColor } from '../../src/utils/check-circle-props';
+
+import {
+  getCircleLetter,
+  getCircleHead,
+} from '../../src/utils/get-circle-props';
+
+import checkCirclesLength from '../../src/utils/check-circles-length';
+
 describe(`${CHECK.STACK_WORKS_CORRECTLY}`, () => {
-  const checkBorderColor = (element, borderStyle) => {
-    cy.wrap(element)
-      .children(CIRCLE_SELECTOR)
-      .should('have.css', 'border', `${borderStyle}`);
-  };
-
-  const getLetter = (circle) => {
-    return circle.children(CIRCLE_SELECTOR).children(CIRCLE_LETTER_SELECTOR);
-  };
-
-  const getHead = (circle) => {
-    return circle.children(CIRCLE_HEAD_SELECTOR);
-  };
-
-  const checkText = (element, str) =>
-    cy.wrap(element).should('have.text', `${str}`);
-
   beforeEach(() => {
     cy.visit('/stack');
   });
 
   it(`${CHECK.BUTTONS_DISABLE_IF_INPUT_IS_EMPTY}`, () => {
     cy.get(INPUT_SELECTOR).should('be.empty');
+
     cy.get('[data-testid*="-button"]').each(($button) =>
       cy.wrap($button).should('be.disabled')
     );
@@ -60,21 +50,23 @@ describe(`${CHECK.STACK_WORKS_CORRECTLY}`, () => {
     cy.get('@input').type('1');
     cy.get('@add-button').click();
 
-    cy.get(CIRCLES_SELECTOR).get(CIRCLE_CONTAINER_SELECTOR).as('circles');
+    cy.get(CIRCLES_SCHEME_SELECTOR)
+      .children(CIRCLE_CONTAINER_SELECTOR)
+      .as('circles_containers');
 
-    cy.get('@circles')
-      .should('have.length', 1)
-      .each(($circle, index) => {
-        if (index === 0) {
-          checkBorderColor($circle, CHANGING_BORDER_STYLE);
-          checkText(getLetter($circle), '1');
-          checkText(getHead($circle), 'top');
+    checkCirclesLength('@circles_containers', 1);
 
-          cy.tick(SHORT_DELAY_IN_MS);
+    cy.get('@circles_containers').each(($circle_container, index) => {
+      if (index === 0) {
+        checkCircleBorderColor($circle_container, CHANGING_BORDER_STYLE);
+        getCircleLetter($circle_container).should('have.text', '1');
+        getCircleHead($circle_container).should('have.text', 'top');
 
-          checkBorderColor($circle, DEFAULT_BORDER_STYLE);
-        }
-      });
+        cy.tick(SHORT_DELAY_IN_MS);
+
+        checkCircleBorderColor($circle_container, DEFAULT_BORDER_STYLE);
+      }
+    });
 
     cy.get('@input').type('2');
     cy.get('@add-button').click();
@@ -84,24 +76,26 @@ describe(`${CHECK.STACK_WORKS_CORRECTLY}`, () => {
     cy.get('@clear-button').should('be.disabled');
     cy.get('@input').should('be.disabled');
 
-    cy.get('@circles')
-      .should('have.length', 2)
-      .each(($circle, index) => {
-        if (index === 0) {
-          checkBorderColor($circle, DEFAULT_BORDER_STYLE);
-          checkText(getLetter($circle), '1');
-          cy.wrap(getHead($circle)).should('be.empty');
-        }
-        if (index === 1) {
-          checkBorderColor($circle, CHANGING_BORDER_STYLE);
-          checkText(getLetter($circle), '2');
-          checkText(getHead($circle), 'top');
+    checkCirclesLength('@circles_containers', 2);
 
-          cy.tick(SHORT_DELAY_IN_MS);
+    cy.get('@circles_containers').each(($circle_container, index) => {
+      if (index === 0) {
+        checkCircleBorderColor($circle_container, DEFAULT_BORDER_STYLE);
 
-          checkBorderColor($circle, DEFAULT_BORDER_STYLE);
-        }
-      });
+        getCircleLetter($circle_container).should('have.text', '1');
+
+        getCircleHead($circle_container).should('be.empty');
+      }
+      if (index === 1) {
+        checkCircleBorderColor($circle_container, CHANGING_BORDER_STYLE);
+        getCircleLetter($circle_container).should('have.text', '2');
+        getCircleHead($circle_container).should('have.text', 'top');
+
+        cy.tick(SHORT_DELAY_IN_MS);
+
+        checkCircleBorderColor($circle_container, DEFAULT_BORDER_STYLE);
+      }
+    });
   });
 
   it(`${CHECK.REMOVING_FROM_STACK_WORKS_CORRECTLY}`, () => {
@@ -122,41 +116,43 @@ describe(`${CHECK.STACK_WORKS_CORRECTLY}`, () => {
 
     cy.tick(DELAY_IN_MS);
 
-    cy.get(CIRCLES_SELECTOR).get(CIRCLE_CONTAINER_SELECTOR).as('circles');
+    cy.get(CIRCLES_SCHEME_SELECTOR)
+      .children(CIRCLE_CONTAINER_SELECTOR)
+      .as('circles_containers');
 
     cy.get('@delete-button').click();
 
-    cy.get('@circles').each(($circle, index) => {
+    cy.get('@circles_containers').each(($circle_container, index) => {
       if (index === 0) {
-        checkBorderColor($circle, DEFAULT_BORDER_STYLE);
+        checkCircleBorderColor($circle_container, DEFAULT_BORDER_STYLE);
       }
 
       if (index === 1) {
-        checkBorderColor($circle, CHANGING_BORDER_STYLE);
+        checkCircleBorderColor($circle_container, CHANGING_BORDER_STYLE);
       }
     });
 
     cy.tick(SHORT_DELAY_IN_MS);
 
-    cy.get('@circles')
-      .should('have.length', 1)
-      .each(($circle, index) => {
-        if (index === 0) {
-          checkText(getHead($circle), 'top');
-        }
-      });
+    checkCirclesLength('@circles_containers', 1);
+
+    cy.get('@circles_containers').each(($circle_container, index) => {
+      if (index === 0) {
+        getCircleHead($circle_container).should('have.text', 'top');
+      }
+    });
 
     cy.get('@delete-button').click();
 
-    cy.get('@circles').each(($circle, index) => {
+    cy.get('@circles_containers').each(($circle_container, index) => {
       if (index === 0) {
-        checkBorderColor($circle, CHANGING_BORDER_STYLE);
+        checkCircleBorderColor($circle_container, CHANGING_BORDER_STYLE);
       }
     });
 
     cy.tick(SHORT_DELAY_IN_MS);
 
-    cy.get('@circles').should('have.length', 0);
+    checkCirclesLength('@circles_containers', 0);
   });
 
   it(`${CHECK.STACK_CLEARING_IS_WORKING_CORRECTLY}`, () => {
@@ -172,7 +168,9 @@ describe(`${CHECK.STACK_WORKS_CORRECTLY}`, () => {
       cy.tick(SHORT_DELAY_IN_MS);
     }
 
-    cy.get(CIRCLES_SELECTOR).get(CIRCLE_CONTAINER_SELECTOR).as('circles');
+    cy.get(CIRCLES_SCHEME_SELECTOR)
+      .get(CIRCLE_CONTAINER_SELECTOR)
+      .as('circles');
 
     cy.get('@clear-button').click();
 
