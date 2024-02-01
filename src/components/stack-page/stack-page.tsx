@@ -42,7 +42,6 @@ export const StackPage: React.FC = () => {
 
     setIsAddingRunning(true);
     setIsControlsDisabled(true);
-    console.log('isAddingRunning', isAddingRunning);
 
     // add element
     stack.push(str);
@@ -124,18 +123,17 @@ export const StackPage: React.FC = () => {
       <ul className={styles.scheme}>
         {circles.length > 0 &&
           circles.map((element, index) => (
-            <li key={index}>
-              <Circle
-                letter={element.letter}
-                index={index}
-                head={index === circles.length - 1 ? 'top' : null}
-                state={
-                  index === circles.length - 1
-                    ? activeCircleState
-                    : ElementStates.Default
-                }
-              />
-            </li>
+            <Circle
+              letter={element.letter}
+              key={index}
+              index={index}
+              head={index === circles.length - 1 ? 'top' : null}
+              state={
+                index === circles.length - 1
+                  ? activeCircleState
+                  : ElementStates.Default
+              }
+            />
           ))}
       </ul>
     </SolutionLayout>
