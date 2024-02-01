@@ -120,7 +120,7 @@ export const StackPage: React.FC = () => {
           disabled={stack.getLength() === 0 || isControlsDisabled}
         />
       </nav>
-      <ul className={styles.scheme}>
+      <div className={styles.scheme}>
         {circles.length > 0 &&
           circles.map((element, index) => (
             <Circle
@@ -135,7 +135,7 @@ export const StackPage: React.FC = () => {
               }
             />
           ))}
-      </ul>
+      </div>
     </SolutionLayout>
   );
 };
