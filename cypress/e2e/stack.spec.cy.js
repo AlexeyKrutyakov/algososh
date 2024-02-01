@@ -6,21 +6,33 @@ import {
 } from '../../src/constants/styles';
 import { DELAY_IN_MS, SHORT_DELAY_IN_MS } from '../../src/constants/delays';
 
-describe('Проверка корректности работы стека', () => {
+import {
+  CIRCLES_SELECTOR,
+  CIRCLE_CONTAINER_SELECTOR,
+  CIRCLE_SELECTOR,
+  CIRCLE_LETTER_SELECTOR,
+  CIRCLE_HEAD_SELECTOR,
+  INPUT_SELECTOR,
+  ADD_BTN_SELECTOR,
+  DELETE_BTN_SELECTOR,
+  CLEAR_BTN_SELECTOR,
+} from '../../src/constants/test-selectors';
+
+import { CHECK } from '../../src/constants/test-names';
+
+describe(`${CHECK.STACK_WORKS_CORRECT}`, () => {
   const checkBorderColor = (element, borderStyle) => {
     cy.wrap(element)
-      .children('[class*="circle_circle"]')
+      .children(CIRCLE_SELECTOR)
       .should('have.css', 'border', `${borderStyle}`);
   };
 
   const getLetter = (circle) => {
-    return circle
-      .children('[class*="circle_circle"]')
-      .children('[class*="circle_letter"]');
+    return circle.children(CIRCLE_SELECTOR).children(CIRCLE_LETTER_SELECTOR);
   };
 
   const getHead = (circle) => {
-    return circle.children('[class*="circle_head"]');
+    return circle.children(CIRCLE_HEAD_SELECTOR);
   };
 
   const checkText = (element, str) =>
@@ -30,25 +42,25 @@ describe('Проверка корректности работы стека', ()
     cy.visit('/stack');
   });
 
-  it('Если инпут не заполнен, кнопки управления недоступны', () => {
-    cy.get('[data-testid="input-for-string"]').should('be.empty');
+  it(`${CHECK.BUTTONS_DISABLE_IF_INPUT_IS_EMPTY}`, () => {
+    cy.get(INPUT_SELECTOR).should('be.empty');
     cy.get('[data-testid*="-button"]').each(($button) =>
       cy.wrap($button).should('be.disabled')
     );
   });
 
-  it('Проверка корректности добавления элементов в стек', () => {
-    cy.get('[data-testid="add-button"]').as('add-button');
-    cy.get('[data-testid="delete-button"]').as('delete-button');
-    cy.get('[data-testid="clear-button"]').as('clear-button');
-    cy.get('[data-testid="input-for-string"]').as('input');
+  it(`${CHECK.STACK_ADD_WORKS_CORRECTLY}`, () => {
+    cy.get(ADD_BTN_SELECTOR).as('add-button');
+    cy.get(DELETE_BTN_SELECTOR).as('delete-button');
+    cy.get(CLEAR_BTN_SELECTOR).as('clear-button');
+    cy.get(INPUT_SELECTOR).as('input');
 
     cy.clock();
 
     cy.get('@input').type('1');
     cy.get('@add-button').click();
 
-    cy.get('[class*="scheme"]').get('[class*="circle_content"]').as('circles');
+    cy.get('[class*="scheme"]').get(CIRCLE_CONTAINER_SELECTOR).as('circles');
 
     cy.get('@circles')
       .should('have.length', 1)
@@ -92,11 +104,11 @@ describe('Проверка корректности работы стека', ()
       });
   });
 
-  it('Проверка корректности удаления элементов из стека', () => {
-    cy.get('[data-testid="add-button"]').as('add-button');
-    cy.get('[data-testid="delete-button"]').as('delete-button');
-    cy.get('[data-testid="clear-button"]').as('clear-button');
-    cy.get('[data-testid="input-for-string"]').as('input');
+  it(`${CHECK.REMOVING_FROM_STACK_WORKS_CORRECTLY}`, () => {
+    cy.get(ADD_BTN_SELECTOR).as('add-button');
+    cy.get(DELETE_BTN_SELECTOR).as('delete-button');
+    cy.get(CLEAR_BTN_SELECTOR).as('clear-button');
+    cy.get(INPUT_SELECTOR).as('input');
 
     cy.clock();
 
@@ -110,7 +122,7 @@ describe('Проверка корректности работы стека', ()
 
     cy.tick(DELAY_IN_MS);
 
-    cy.get('[class*="scheme"]').get('[class*="circle_content"]').as('circles');
+    cy.get(CIRCLES_SELECTOR).get(CIRCLE_CONTAINER_SELECTOR).as('circles');
 
     cy.get('@delete-button').click();
 
@@ -147,12 +159,12 @@ describe('Проверка корректности работы стека', ()
     cy.get('@circles').should('have.length', 0);
   });
 
-  it('Проверка корректности очистки стека', () => {
+  it(`${CHECK.STACK_CLEARING_IS_WORKING_CORRECTLY}`, () => {
     cy.clock();
 
-    cy.get('[data-testid="add-button"]').as('add-button');
-    cy.get('[data-testid="clear-button"]').as('clear-button');
-    cy.get('[data-testid="input-for-string"]').as('input');
+    cy.get(ADD_BTN_SELECTOR).as('add-button');
+    cy.get(CLEAR_BTN_SELECTOR).as('clear-button');
+    cy.get(INPUT_SELECTOR).as('input');
 
     for (let i = 0; i < 3; i++) {
       cy.get('@input').type(`${i}`);
@@ -160,7 +172,7 @@ describe('Проверка корректности работы стека', ()
       cy.tick(SHORT_DELAY_IN_MS);
     }
 
-    cy.get('[class*="scheme"]').get('[class*="circle_content"]').as('circles');
+    cy.get(CIRCLES_SELECTOR).get(CIRCLE_CONTAINER_SELECTOR).as('circles');
 
     cy.get('@clear-button').click();
 
