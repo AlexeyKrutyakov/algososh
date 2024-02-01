@@ -113,7 +113,7 @@ export const QueuePage: React.FC = () => {
           extraClass={styles.input}
           isLimitText={true}
           maxLength={4}
-          onChange={event => setStr(event.currentTarget.value)}
+          onChange={(event) => setStr(event.currentTarget.value)}
           disabled={
             (queue.getHead() !== null && queue.getTail() === null) ||
             isControlsDisabled
@@ -146,20 +146,19 @@ export const QueuePage: React.FC = () => {
           }
         />
       </nav>
-      <ul className={styles.scheme}>
+      <div className={styles.scheme}>
         {circles.length > 0 &&
           circles.map((element, index) => (
-            <li key={index}>
-              <Circle
-                letter={element.letter}
-                index={element.index}
-                head={index === queue.getHead() ? HEAD : ''}
-                tail={index === queue.getTail() ? TAIL : ''}
-                state={calculateState(index)}
-              />
-            </li>
+            <Circle
+              letter={element.letter}
+              key={index}
+              index={element.index}
+              head={index === queue.getHead() ? HEAD : ''}
+              tail={index === queue.getTail() ? TAIL : ''}
+              state={calculateState(index)}
+            />
           ))}
-      </ul>
+      </div>
     </SolutionLayout>
   );
 };
