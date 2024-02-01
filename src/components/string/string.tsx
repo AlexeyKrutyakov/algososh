@@ -80,10 +80,7 @@ export const StringComponent: React.FC = () => {
         />
       </form>
       {circles.length > 0 && (
-        <div
-          className={styles.scheme}
-          data-testid="scheme"
-        >
+        <div className={styles.scheme}>
           {circles.map((circle, index) => {
             return (
               <Circle
