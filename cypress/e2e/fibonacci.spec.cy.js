@@ -3,20 +3,17 @@
 import {
   INPUT_SELECTOR,
   SUBMIT_BTN_SELECTOR,
-  CIRCLES_SELECTOR,
-  CIRCLE_SELECTOR,
+  CIRCLES_SCHEME_SELECTOR,
+  CIRCLE_CONTAINER_SELECTOR,
 } from '../../src/constants/test-selectors';
 import { SHORT_DELAY_IN_MS } from '../../src/constants/delays';
 import { FIBONACCI_ARRAY } from '../../src/constants/mock-data';
 import { CHECK } from '../../src/constants/test-names';
 
-describe(`${CHECK.FIBONACCI}`, () => {
-  const checkCirclesLength = (elements, length) => {
-    cy.get(elements).should('have.length', length);
-  };
-  const checkLetter = (element, letter) =>
-    cy.wrap(element).should('have.text', `${letter}`);
+import checkCirclesLength from '../../src/utils/check-circles-length';
+import { getCircleLetter } from '../../src/utils/get-circle-props';
 
+describe(`${CHECK.FIBONACCI}`, () => {
   beforeEach(() => {
     cy.visit('/fibonacci');
   });
@@ -33,17 +30,22 @@ describe(`${CHECK.FIBONACCI}`, () => {
     cy.get(SUBMIT_BTN_SELECTOR).click();
 
     cy.tick(SHORT_DELAY_IN_MS);
-    cy.get(CIRCLES_SELECTOR).children().as('circles');
+    cy.get(CIRCLES_SCHEME_SELECTOR)
+      .children(CIRCLE_CONTAINER_SELECTOR)
+      .as('circles_containers');
 
     for (let length = 1; length <= FIBONACCI_ARRAY.length; length++) {
-      checkCirclesLength('@circles', length);
+      checkCirclesLength('@circles_containers', length);
       cy.tick(SHORT_DELAY_IN_MS);
     }
 
-    cy.get('@circles').each(($circle, index) => {
+    cy.get('@circles_containers').each(($circle_container, index) => {
       for (let i = 0; i < FIBONACCI_ARRAY.length; i++) {
         if (i === index) {
-          checkLetter($circle.children(CIRCLE_SELECTOR), FIBONACCI_ARRAY[i]);
+          getCircleLetter($circle_container).should(
+            'have.text',
+            FIBONACCI_ARRAY[i]
+          );
         }
       }
     });
