@@ -1,4 +1,4 @@
-export const CIRCLES_SELECTOR = '[class*="scheme"]';
+export const CIRCLES_SCHEME_SELECTOR = '[class*="scheme"]';
 export const CIRCLE_CONTAINER_SELECTOR = '[class*="circle_content"]';
 export const CIRCLE_SELECTOR = '[class*="circle_circle"]';
 export const CIRCLE_LETTER_SELECTOR = '[class*="circle_letter"]';
