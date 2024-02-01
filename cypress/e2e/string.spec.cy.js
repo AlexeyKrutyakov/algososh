@@ -1,31 +1,24 @@
 /// <reference types="Cypress" />
 
 import {
-  CIRCLES_SELECTOR,
-  CIRCLE_SELECTOR,
+  CIRCLES_SCHEME_SELECTOR,
+  CIRCLE_CONTAINER_SELECTOR,
   INPUT_SELECTOR,
   SUBMIT_BTN_SELECTOR,
 } from '../../src/constants/test-selectors';
-
 import {
   DEFAULT_BORDER_STYLE,
   CHANGING_BORDER_STYLE,
   MODIFIED_BORDER_STYLE,
 } from '../../src/constants/styles';
-
 import { CHECK } from '../../src/constants/test-names';
-
 import { DELAY_IN_MS } from '../../src/constants/delays';
 
-describe(`${CHECK.STRING}`, () => {
-  const checkLetter = (element, letter) =>
-    cy.wrap(element).should('have.text', `${letter}`);
-  const checkBorderColor = (element, borderStyle) => {
-    cy.wrap(element)
-      .children(CIRCLE_SELECTOR)
-      .should('have.css', 'border', `${borderStyle}`);
-  };
+import checkCirclesLength from '../../src/utils/check-circles-length';
+import { checkCircleBorderColor } from '../../src/utils/check-circle-props';
+import { getCircleLetter } from '../../src/utils/get-circle-props';
 
+describe(`${CHECK.STRING}`, () => {
   beforeEach(() => {
     cy.visit('/recursion');
   });
@@ -34,81 +27,84 @@ describe(`${CHECK.STRING}`, () => {
     cy.get(INPUT_SELECTOR).should('be.empty');
     cy.get(SUBMIT_BTN_SELECTOR).should('be.disabled');
   });
+
   it(`${CHECK.STRING_REVERSE_IS_CORRECT}`, () => {
     cy.clock();
 
     cy.get(INPUT_SELECTOR).type('cat');
     cy.get(SUBMIT_BTN_SELECTOR).click();
 
-    cy.get(CIRCLES_SELECTOR).children().as('circles');
+    cy.get(CIRCLES_SCHEME_SELECTOR)
+      .children(CIRCLE_CONTAINER_SELECTOR)
+      .as('circles_containers');
 
-    cy.get('@circles')
-      .should('have.length', 3)
-      .each(($circle, index) => {
-        checkBorderColor($circle, DEFAULT_BORDER_STYLE);
+    checkCirclesLength('@circles_containers', 3);
 
-        if (index === 0) {
-          checkLetter($circle, 'c');
-        }
+    cy.get('@circles_containers').each(($circle_container, index) => {
+      checkCircleBorderColor($circle_container, DEFAULT_BORDER_STYLE);
 
-        if (index === 1) {
-          checkLetter($circle, 'a');
-        }
-
-        if (index === 2) {
-          checkLetter($circle, 't');
-        }
-      });
-
-    cy.tick(DELAY_IN_MS);
-
-    cy.get('@circles').each(($circle, index) => {
       if (index === 0) {
-        checkLetter($circle, 'c');
-        checkBorderColor($circle, CHANGING_BORDER_STYLE);
+        getCircleLetter($circle_container).should('have.text', 'c');
       }
+
       if (index === 1) {
-        checkLetter($circle, 'a');
-        checkBorderColor($circle, DEFAULT_BORDER_STYLE);
+        getCircleLetter($circle_container).should('have.text', 'a');
       }
+
       if (index === 2) {
-        checkLetter($circle, 't');
-        checkBorderColor($circle, CHANGING_BORDER_STYLE);
+        getCircleLetter($circle_container).should('have.text', 't');
       }
     });
 
     cy.tick(DELAY_IN_MS);
 
-    cy.get('@circles').each(($circle, index) => {
+    cy.get('@circles_containers').each(($circle_container, index) => {
       if (index === 0) {
-        checkLetter($circle, 't');
-        checkBorderColor($circle, MODIFIED_BORDER_STYLE);
+        getCircleLetter($circle_container).should('have.text', 'c');
+        checkCircleBorderColor($circle_container, CHANGING_BORDER_STYLE);
       }
       if (index === 1) {
-        checkLetter($circle, 'a');
-        checkBorderColor($circle, CHANGING_BORDER_STYLE);
+        getCircleLetter($circle_container).should('have.text', 'a');
+        checkCircleBorderColor($circle_container, DEFAULT_BORDER_STYLE);
       }
       if (index === 2) {
-        checkLetter($circle, 'c');
-        checkBorderColor($circle, MODIFIED_BORDER_STYLE);
+        getCircleLetter($circle_container).should('have.text', 't');
+        checkCircleBorderColor($circle_container, CHANGING_BORDER_STYLE);
       }
     });
 
     cy.tick(DELAY_IN_MS);
 
-    cy.get('@circles').each(($circle, index) => {
-      checkBorderColor($circle, MODIFIED_BORDER_STYLE);
+    cy.get('@circles_containers').each(($circle_container, index) => {
+      if (index === 0) {
+        getCircleLetter($circle_container).should('have.text', 't');
+        checkCircleBorderColor($circle_container, MODIFIED_BORDER_STYLE);
+      }
+      if (index === 1) {
+        getCircleLetter($circle_container).should('have.text', 'a');
+        checkCircleBorderColor($circle_container, CHANGING_BORDER_STYLE);
+      }
+      if (index === 2) {
+        getCircleLetter($circle_container).should('have.text', 'c');
+        checkCircleBorderColor($circle_container, MODIFIED_BORDER_STYLE);
+      }
+    });
+
+    cy.tick(DELAY_IN_MS);
+
+    cy.get('@circles_containers').each(($circle_container, index) => {
+      checkCircleBorderColor($circle_container, MODIFIED_BORDER_STYLE);
 
       if (index === 0) {
-        checkLetter($circle, 't');
+        getCircleLetter($circle_container).should('have.text', 't');
       }
 
       if (index === 1) {
-        checkLetter($circle, 'a');
+        getCircleLetter($circle_container).should('have.text', 'a');
       }
 
       if (index === 2) {
-        checkLetter($circle, 'c');
+        getCircleLetter($circle_container).should('have.text', 'c');
       }
     });
 
