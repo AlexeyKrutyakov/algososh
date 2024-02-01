@@ -82,10 +82,7 @@ export const FibonacciPage: React.FC = () => {
         />
       </form>
       {fibonacciNumbers.length > 0 && (
-        <div
-          className={styles.scheme}
-          data-testid="scheme"
-        >
+        <div className={styles.scheme}>
           {fibonacciNumbers.map((number, index) => {
             return (
               <Circle
