@@ -20,7 +20,7 @@ import {
 
 import { CHECK } from '../../src/constants/test-names';
 
-describe(`${CHECK.STACK_WORKS_CORRECT}`, () => {
+describe(`${CHECK.STACK_WORKS_CORRECTLY}`, () => {
   const checkBorderColor = (element, borderStyle) => {
     cy.wrap(element)
       .children(CIRCLE_SELECTOR)
@@ -49,7 +49,7 @@ describe(`${CHECK.STACK_WORKS_CORRECT}`, () => {
     );
   });
 
-  it(`${CHECK.STACK_ADD_WORKS_CORRECTLY}`, () => {
+  it(`${CHECK.ADDING_TO_STACK_WORKS_CORRECTLY}`, () => {
     cy.get(ADD_BTN_SELECTOR).as('add-button');
     cy.get(DELETE_BTN_SELECTOR).as('delete-button');
     cy.get(CLEAR_BTN_SELECTOR).as('clear-button');
@@ -60,7 +60,7 @@ describe(`${CHECK.STACK_WORKS_CORRECT}`, () => {
     cy.get('@input').type('1');
     cy.get('@add-button').click();
 
-    cy.get('[class*="scheme"]').get(CIRCLE_CONTAINER_SELECTOR).as('circles');
+    cy.get(CIRCLES_SELECTOR).get(CIRCLE_CONTAINER_SELECTOR).as('circles');
 
     cy.get('@circles')
       .should('have.length', 1)
