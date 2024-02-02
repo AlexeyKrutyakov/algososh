@@ -21,6 +21,11 @@ export const CHECK = {
   QUEUE_PAGE_VISIT: 'Переход на страницу "Очередь"',
   QUEUE_WORKS_CORRECTLY: 'Проверка корректности работы очереди',
   QUEUE_TEMPLATE_IS_CORRECT: 'Шаблон очереди корректен',
+  ADDING_TO_QUEUE_WORKS_CORRECTLY:
+    'Проверка корректности добавления элементов в очередь',
+  REMOVING_FROM_QUEUE_WORKS_CORRECTLY:
+    'Проверка корректности удаления элементов из очереди',
+  QUEUE_CLEARING_IS_WORKING_CORRECTLY: 'Проверка корректности очистки очереди',
   LIST_PAGE_VISIT: 'Переход на страницу "Связный список"',
   SUBMIT_DISABLE_IF_INPUT_IS_EMPTY:
     'Если инпут не заполнен, кнопка "Submit" недоступна',

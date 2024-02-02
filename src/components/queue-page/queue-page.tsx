@@ -109,6 +109,7 @@ export const QueuePage: React.FC = () => {
     <SolutionLayout title="Очередь">
       <nav className={styles.controls}>
         <Input
+          data-testid="input-for-string"
           value={str}
           extraClass={styles.input}
           isLimitText={true}
@@ -120,6 +121,7 @@ export const QueuePage: React.FC = () => {
           }
         />
         <Button
+          data-testid="add-button"
           text="Добавить"
           onClick={addElement}
           isLoader={isAddingRunning}
@@ -130,12 +132,14 @@ export const QueuePage: React.FC = () => {
           }
         />
         <Button
+          data-testid="delete-button"
           text="Удалить"
           onClick={deleteElement}
           isLoader={isDeletingRunning}
           disabled={queue.getLength() === 0 || isControlsDisabled}
         />
         <Button
+          data-testid="clear-button"
           extraClass={styles.button_last}
           text="Очистить"
           onClick={clearQueue}
