@@ -50,6 +50,11 @@ describe(`${CHECK.STACK_WORKS_CORRECTLY}`, () => {
     cy.get('@input').type('1');
     cy.get('@add-button').click();
 
+    cy.get('@add-button').should('be.disabled');
+    cy.get('@delete-button').should('be.disabled');
+    cy.get('@clear-button').should('be.disabled');
+    cy.get('@input').should('be.disabled');
+
     cy.get(CIRCLES_SCHEME_SELECTOR)
       .children(CIRCLE_CONTAINER_SELECTOR)
       .as('circles_containers');
@@ -70,11 +75,6 @@ describe(`${CHECK.STACK_WORKS_CORRECTLY}`, () => {
 
     cy.get('@input').type('2');
     cy.get('@add-button').click();
-
-    cy.get('@add-button').should('be.disabled');
-    cy.get('@delete-button').should('be.disabled');
-    cy.get('@clear-button').should('be.disabled');
-    cy.get('@input').should('be.disabled');
 
     checkCirclesLength('@circles_containers', 2);
 
