@@ -27,8 +27,20 @@ import {
 import checkCirclesLength from '../../src/utils/check-circles-length';
 
 describe(`${CHECK.STACK_WORKS_CORRECTLY}`, () => {
+  const addElement = (text) => {
+    cy.get('@input').type(text);
+    cy.get('@add-button').click();
+  };
+
   beforeEach(() => {
     cy.visit('/stack');
+
+    cy.get(ADD_BTN_SELECTOR).as('add-button');
+    cy.get(DELETE_BTN_SELECTOR).as('delete-button');
+    cy.get(CLEAR_BTN_SELECTOR).as('clear-button');
+    cy.get(INPUT_SELECTOR).as('input');
+
+    cy.clock();
   });
 
   it(`${CHECK.BUTTONS_DISABLE_IF_INPUT_IS_EMPTY}`, () => {
@@ -40,15 +52,7 @@ describe(`${CHECK.STACK_WORKS_CORRECTLY}`, () => {
   });
 
   it(`${CHECK.ADDING_TO_STACK_WORKS_CORRECTLY}`, () => {
-    cy.get(ADD_BTN_SELECTOR).as('add-button');
-    cy.get(DELETE_BTN_SELECTOR).as('delete-button');
-    cy.get(CLEAR_BTN_SELECTOR).as('clear-button');
-    cy.get(INPUT_SELECTOR).as('input');
-
-    cy.clock();
-
-    cy.get('@input').type('1');
-    cy.get('@add-button').click();
+    addElement('1');
 
     cy.get('@add-button').should('be.disabled');
     cy.get('@delete-button').should('be.disabled');
@@ -73,8 +77,7 @@ describe(`${CHECK.STACK_WORKS_CORRECTLY}`, () => {
       }
     });
 
-    cy.get('@input').type('2');
-    cy.get('@add-button').click();
+    addElement('2');
 
     checkCirclesLength('@circles_containers', 2);
 
@@ -99,20 +102,11 @@ describe(`${CHECK.STACK_WORKS_CORRECTLY}`, () => {
   });
 
   it(`${CHECK.REMOVING_FROM_STACK_WORKS_CORRECTLY}`, () => {
-    cy.get(ADD_BTN_SELECTOR).as('add-button');
-    cy.get(DELETE_BTN_SELECTOR).as('delete-button');
-    cy.get(CLEAR_BTN_SELECTOR).as('clear-button');
-    cy.get(INPUT_SELECTOR).as('input');
-
-    cy.clock();
-
-    cy.get('@input').type('1');
-    cy.get('@add-button').click();
+    addElement('1');
 
     cy.tick(DELAY_IN_MS);
 
-    cy.get('@input').type('2');
-    cy.get('@add-button').click();
+    addElement('2');
 
     cy.tick(DELAY_IN_MS);
 
@@ -156,15 +150,8 @@ describe(`${CHECK.STACK_WORKS_CORRECTLY}`, () => {
   });
 
   it(`${CHECK.STACK_CLEARING_IS_WORKING_CORRECTLY}`, () => {
-    cy.clock();
-
-    cy.get(ADD_BTN_SELECTOR).as('add-button');
-    cy.get(CLEAR_BTN_SELECTOR).as('clear-button');
-    cy.get(INPUT_SELECTOR).as('input');
-
     for (let i = 0; i < 3; i++) {
-      cy.get('@input').type(`${i}`);
-      cy.get('@add-button').click();
+      addElement(`${i}`);
       cy.tick(SHORT_DELAY_IN_MS);
     }
 
