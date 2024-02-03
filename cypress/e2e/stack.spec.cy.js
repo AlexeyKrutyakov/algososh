@@ -3,7 +3,7 @@
 import {
   DEFAULT_BORDER_STYLE,
   CHANGING_BORDER_STYLE,
-} from '../../src/constants/styles';
+} from '../constants/styles';
 import { DELAY_IN_MS, SHORT_DELAY_IN_MS } from '../../src/constants/delays';
 
 import {
@@ -13,18 +13,15 @@ import {
   ADD_BTN_SELECTOR,
   DELETE_BTN_SELECTOR,
   CLEAR_BTN_SELECTOR,
-} from '../../src/constants/test-selectors';
+} from '../constants/test-selectors';
 
-import { CHECK } from '../../src/constants/test-names';
+import { CHECK } from '../constants/test-names';
 
-import { checkCircleBorderColor } from '../../src/utils/check-circle-props';
+import { checkCircleBorderColor } from '../utils/check-circle-props';
 
-import {
-  getCircleLetter,
-  getCircleHead,
-} from '../../src/utils/get-circle-props';
+import { getCircleLetter, getCircleHead } from '../utils/get-circle-props';
 
-import checkCirclesLength from '../../src/utils/check-circles-length';
+import checkCirclesLength from '../utils/check-circles-length';
 
 describe(`${CHECK.STACK_WORKS_CORRECTLY}`, () => {
   const addElement = (text) => {

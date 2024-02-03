@@ -4,8 +4,8 @@ import { SHORT_DELAY_IN_MS } from '../../src/constants/delays';
 import {
   CHANGING_BORDER_STYLE,
   DEFAULT_BORDER_STYLE,
-} from '../../src/constants/styles';
-import { CHECK } from '../../src/constants/test-names';
+} from '../constants/styles';
+import { CHECK } from '../constants/test-names';
 import {
   ADD_BTN_SELECTOR,
   CIRCLES_SCHEME_SELECTOR,
@@ -14,15 +14,15 @@ import {
   CLEAR_BTN_SELECTOR,
   DELETE_BTN_SELECTOR,
   INPUT_SELECTOR,
-} from '../../src/constants/test-selectors';
-import { checkCircleBorderColor } from '../../src/utils/check-circle-props';
+} from '../constants/test-selectors';
+import { checkCircleBorderColor } from '../utils/check-circle-props';
 
-import checkCirclesLength from '../../src/utils/check-circles-length';
+import checkCirclesLength from '../utils/check-circles-length';
 import {
   getCircleHead,
   getCircleLetter,
   getCircleTail,
-} from '../../src/utils/get-circle-props';
+} from '../utils/get-circle-props';
 
 describe(`${CHECK.QUEUE_WORKS_CORRECTLY}`, () => {
   const addElement = (text) => {

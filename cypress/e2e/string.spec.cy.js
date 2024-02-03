@@ -5,18 +5,18 @@ import {
   CIRCLE_CONTAINER_SELECTOR,
   INPUT_SELECTOR,
   SUBMIT_BTN_SELECTOR,
-} from '../../src/constants/test-selectors';
+} from '../constants/test-selectors';
 import {
   DEFAULT_BORDER_STYLE,
   CHANGING_BORDER_STYLE,
   MODIFIED_BORDER_STYLE,
-} from '../../src/constants/styles';
-import { CHECK } from '../../src/constants/test-names';
+} from '../constants/styles.ts';
+import { CHECK } from '../constants/test-names';
 import { DELAY_IN_MS } from '../../src/constants/delays';
 
-import checkCirclesLength from '../../src/utils/check-circles-length';
-import { checkCircleBorderColor } from '../../src/utils/check-circle-props';
-import { getCircleLetter } from '../../src/utils/get-circle-props';
+import checkCirclesLength from '../utils/check-circles-length.ts';
+import { checkCircleBorderColor } from '../utils/check-circle-props';
+import { getCircleLetter } from '../utils/get-circle-props';
 
 describe(`${CHECK.STRING}`, () => {
   beforeEach(() => {

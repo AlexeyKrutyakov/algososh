@@ -1,8 +1,8 @@
 /// <reference types="Cypress" />
 
-import { CHECK } from '../../src/constants/test-names';
-import { CARD_TITLE_SELECTOR } from '../../src/constants/test-selectors';
-import { CARD_TITLE } from '../../src/constants/page-titles';
+import { CHECK } from '../constants/test-names';
+import { CARD_TITLE_SELECTOR } from '../constants/test-selectors';
+import { CARD_TITLE } from '../constants/page-titles';
 
 const checkTitle = (title) => {
   cy.get(CARD_TITLE_SELECTOR).should('have.text', title);

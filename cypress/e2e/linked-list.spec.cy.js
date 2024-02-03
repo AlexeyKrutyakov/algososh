@@ -1,4 +1,4 @@
-import { CHECK } from '../../src/constants/test-names';
+import { CHECK } from '../constants/test-names';
 import {
   ADD_BY_INDEX_BTN_SELECTOR,
   ADD_TO_HEAD_BTN_SELECTOR,
@@ -15,7 +15,7 @@ import {
   REMOVE_BY_INDEX_BTN_SELECTOR,
   REMOVE_FROM_HEAD_BTN_SELECTOR,
   REMOVE_FROM_TAIL_BTN_SELECTOR,
-} from '../../src/constants/test-selectors';
+} from '../constants/test-selectors';
 
 import { DEFAULT_LINKED_LIST } from '../../src/constants/mock-data';
 import { SHORT_DELAY_IN_MS } from '../../src/constants/delays';
@@ -23,7 +23,7 @@ import {
   CHANGING_BORDER_STYLE,
   DEFAULT_BORDER_STYLE,
   MODIFIED_BORDER_STYLE,
-} from '../../src/constants/styles';
+} from '../constants/styles';
 
 describe(`${CHECK.LIST_WORKS_CORRECTLY}`, () => {
   beforeEach(() => {

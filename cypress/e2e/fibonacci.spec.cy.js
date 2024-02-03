@@ -5,13 +5,13 @@ import {
   SUBMIT_BTN_SELECTOR,
   CIRCLES_SCHEME_SELECTOR,
   CIRCLE_CONTAINER_SELECTOR,
-} from '../../src/constants/test-selectors';
+} from '../constants/test-selectors';
 import { SHORT_DELAY_IN_MS } from '../../src/constants/delays';
 import { FIBONACCI_ARRAY } from '../../src/constants/mock-data';
-import { CHECK } from '../../src/constants/test-names';
+import { CHECK } from '../constants/test-names';
 
-import checkCirclesLength from '../../src/utils/check-circles-length';
-import { getCircleLetter } from '../../src/utils/get-circle-props';
+import checkCirclesLength from '../utils/check-circles-length';
+import { getCircleLetter } from '../utils/get-circle-props';
 
 describe(`${CHECK.FIBONACCI}`, () => {
   beforeEach(() => {
