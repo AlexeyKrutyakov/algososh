@@ -27,6 +27,21 @@ export const CHECK = {
     'Проверка корректности удаления элементов из очереди',
   QUEUE_CLEARING_IS_WORKING_CORRECTLY: 'Проверка корректности очистки очереди',
   LIST_PAGE_VISIT: 'Переход на страницу "Связный список"',
+  LIST_WORKS_CORRECTLY: 'Проверка корректности работы связного списка',
+  LIST_TEMPLATE_IS_CORRECT:
+    'Проверка корректности связного списка по умолчанию',
+  ADDING_TO_HEAD_OF_LINK_WORKS_CORRECTLY:
+    'Проверка корректности добавления элемента в начало списка',
+  ADDING_TO_TAIL_OF_LINK_WORKS_CORRECTLY:
+    'Проверка корректности добавления элемента в конец списка',
+  ADDING_TO_LINK_BY_INDEX_WORKS_CORRECTLY:
+    'Проверка корректности добавления элемента в список по индексу',
+  REMOVING_FROM_HEAD_OF_LINK_WORKS_CORRECTLY:
+    'Проверка корректности удаления элемента из начала списка',
+  REMOVING_FROM_TAIL_OF_LINK_WORKS_CORRECTLY:
+    'Проверка корректности удаления элемента из конца списка',
+  REMOVING_FROM_LINK_BY_INDEX_WORKS_CORRECTLY:
+    'Проверка корректности удаления элемента из списка по индексу',
   SUBMIT_DISABLE_IF_INPUT_IS_EMPTY:
     'Если инпут не заполнен, кнопка "Submit" недоступна',
   BUTTONS_DISABLE_IF_INPUT_IS_EMPTY:

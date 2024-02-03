@@ -10,6 +10,7 @@ import { HEAD, TAIL } from '../../constants/element-captions';
 import { delay } from '../../utils';
 import { SHORT_DELAY_IN_MS } from '../../constants/delays';
 import { LinkedList } from './linked-list';
+import { DEFAULT_LINKED_LIST } from '../../constants/mock-data';
 
 const linkedList = new LinkedList<string>();
 const linkedListMaxSize = 9;
@@ -65,7 +66,11 @@ export const ListPage: React.FC = () => {
 
   const createCircleMark = (): JSX.Element => {
     return (
-      <Circle letter={mark.letter} isSmall={mark.isSmall} state={mark.state} />
+      <Circle
+        letter={mark.letter}
+        isSmall={mark.isSmall}
+        state={mark.state}
+      />
     );
   };
 
@@ -249,10 +254,9 @@ export const ListPage: React.FC = () => {
   };
 
   useEffect(() => {
-    linkedList.append('0');
-    linkedList.append('34');
-    linkedList.append('8');
-    linkedList.append('1');
+    for (let i = 0; i < DEFAULT_LINKED_LIST.length; i++) {
+      linkedList.append(DEFAULT_LINKED_LIST[i]);
+    }
 
     setCircles(createCircles());
 
@@ -263,16 +267,18 @@ export const ListPage: React.FC = () => {
     <SolutionLayout title="Связный список">
       <nav className={styles.controls_value}>
         <Input
+          data-testid="input-for-string"
           extraClass={styles.input}
           placeholder="Введите значение"
           type="text"
           isLimitText={true}
           maxLength={4}
           value={str}
-          onChange={event => setStr(event.currentTarget.value)}
+          onChange={(event) => setStr(event.currentTarget.value)}
           disabled={isDisabled}
         />
         <Button
+          data-testid="add-to-head-button"
           extraClass={styles.button_top}
           text="Добавить в head"
           onClick={addToHeadHandler}
@@ -280,6 +286,7 @@ export const ListPage: React.FC = () => {
           disabled={isDisabled || str === ''}
         />
         <Button
+          data-testid="add-to-tail-button"
           extraClass={styles.button_top}
           text="Добавить в tail"
           onClick={addToTailHandler}
@@ -287,6 +294,7 @@ export const ListPage: React.FC = () => {
           disabled={isDisabled || str === ''}
         />
         <Button
+          data-testid="remove-from-head-button"
           extraClass={styles.button_top}
           text="Удалить из head"
           onClick={removeFromHeadHandler}
@@ -294,6 +302,7 @@ export const ListPage: React.FC = () => {
           disabled={isDisabled || linkedList.getSize() <= linkedListMinSize}
         />
         <Button
+          data-testid="remove-from-tail-button"
           extraClass={styles.button_top}
           text="Удалить из tail"
           onClick={removeFromTailHandler}
@@ -303,14 +312,16 @@ export const ListPage: React.FC = () => {
       </nav>
       <nav className={styles.controls_index}>
         <Input
+          data-testid="input-for-index"
           extraClass={styles.input}
           placeholder="Введите индекс"
           type="number"
           value={inputIndex}
-          onChange={event => setInputIndex(event.currentTarget.value)}
+          onChange={(event) => setInputIndex(event.currentTarget.value)}
           disabled={isDisabled}
         />
         <Button
+          data-testid="add-by-index-button"
           extraClass={styles.button_bot}
           text="Добавить по индексу"
           onClick={addByIndexHandler}
@@ -324,6 +335,7 @@ export const ListPage: React.FC = () => {
           }
         />
         <Button
+          data-testid="remove-by-index-button"
           extraClass={styles.button_bot}
           text="Удалить по индексу"
           onClick={removeByIndexHandler}
@@ -340,7 +352,10 @@ export const ListPage: React.FC = () => {
         {linkedList.getSize() > 0 &&
           circles.map((element, index) => {
             return (
-              <article key={index} className={styles.article}>
+              <article
+                key={index}
+                className={styles.circle_article}
+              >
                 <Circle
                   index={index}
                   letter={element.letter}
