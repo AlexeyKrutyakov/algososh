@@ -89,7 +89,7 @@ export const StackPage: React.FC = () => {
     <SolutionLayout title="Стек">
       <nav className={styles.controls}>
         <Input
-          data-testid="input-for-string"
+          data-cy="input-for-string"
           name="text"
           value={str}
           extraClass={styles.input}
@@ -99,21 +99,21 @@ export const StackPage: React.FC = () => {
           disabled={isControlsDisabled}
         />
         <Button
-          data-testid="add-button"
+          data-cy="add-button"
           text="Добавить"
           onClick={addElement}
           isLoader={isAddingRunning}
           disabled={str === '' || isControlsDisabled}
         />
         <Button
-          data-testid="delete-button"
+          data-cy="delete-button"
           text="Удалить"
           onClick={deleteElement}
           isLoader={isDeletingRunning}
           disabled={stack.getLength() === 0 || isControlsDisabled}
         />
         <Button
-          data-testid="clear-button"
+          data-cy="clear-button"
           extraClass={styles.button_last}
           text="Очистить"
           onClick={clear}

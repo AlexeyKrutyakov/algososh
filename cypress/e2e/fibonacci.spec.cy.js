@@ -1,33 +1,34 @@
 /// <reference types="Cypress" />
 
 import {
-  INPUT_SELECTOR,
-  SUBMIT_BTN_SELECTOR,
   CIRCLES_SCHEME_SELECTOR,
   CIRCLE_CONTAINER_SELECTOR,
-} from '../constants/test-selectors';
+} from '../constants/circle-selectors';
 import { SHORT_DELAY_IN_MS } from '../../src/constants/delays';
 import { FIBONACCI_ARRAY } from '../../src/constants/mock-data';
 import { CHECK } from '../constants/test-names';
 
 import checkCirclesLength from '../utils/check-circles-length';
 import { getCircleLetter } from '../utils/get-circle-props';
+import { createSelector } from '../utils/create-selector';
 
 describe(`${CHECK.FIBONACCI}`, () => {
   beforeEach(() => {
     cy.visit('/fibonacci');
+    cy.get(createSelector('input-for-string')).as('input');
+    cy.get(createSelector('submit-button')).as('submit-btn');
   });
 
   it(`${CHECK.SUBMIT_DISABLE_IF_INPUT_IS_EMPTY}`, () => {
-    cy.get(INPUT_SELECTOR).should('be.empty');
-    cy.get(SUBMIT_BTN_SELECTOR).should('be.disabled');
+    cy.get('@input').should('be.empty');
+    cy.get('@submit-btn').should('be.disabled');
   });
 
   it(`${CHECK.FIBONACCI_SERIES_IS_CORRECT}`, () => {
     cy.clock();
 
-    cy.get(INPUT_SELECTOR).type(`${FIBONACCI_ARRAY.length - 1}`);
-    cy.get(SUBMIT_BTN_SELECTOR).click();
+    cy.get('@input').type(`${FIBONACCI_ARRAY.length - 1}`);
+    cy.get('@submit-btn').click();
 
     cy.tick(SHORT_DELAY_IN_MS);
     cy.get(CIRCLES_SCHEME_SELECTOR)

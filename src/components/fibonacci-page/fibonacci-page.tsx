@@ -62,7 +62,7 @@ export const FibonacciPage: React.FC = () => {
         onSubmit={submitHandler}
       >
         <Input
-          data-testid="input-for-string"
+          data-cy="input-for-string"
           name="stringInput"
           type="number"
           max={maxNumber}
@@ -73,7 +73,7 @@ export const FibonacciPage: React.FC = () => {
           disabled={isInputDisabled}
         />
         <Button
-          data-testid="submit-button"
+          data-cy="submit-button"
           isLoader={isLoading}
           text="Рассчитать"
           type="submit"

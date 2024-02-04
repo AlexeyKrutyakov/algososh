@@ -1,6 +1,6 @@
 /// <reference types="Cypress" />
 
-import { CIRCLE_SELECTOR } from '../constants/test-selectors';
+import { CIRCLE_SELECTOR } from '../constants/circle-selectors';
 
 export const checkCircleBorderColor = (
   circle_container: any,

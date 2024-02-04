@@ -1,11 +1,10 @@
 /// <reference types="Cypress" />
 
 import { CHECK } from '../constants/test-names';
-import { CARD_TITLE_SELECTOR } from '../constants/test-selectors';
 import { CARD_TITLE } from '../constants/page-titles';
 
 const checkTitle = (title) => {
-  cy.get(CARD_TITLE_SELECTOR).should('have.text', title);
+  cy.get('[class*="cardTitle"]').should('have.text', title);
 };
 
 describe(`${CHECK.ROUTING_AVAILABLE}`, () => {

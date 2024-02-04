@@ -3,9 +3,7 @@
 import {
   CIRCLES_SCHEME_SELECTOR,
   CIRCLE_CONTAINER_SELECTOR,
-  INPUT_SELECTOR,
-  SUBMIT_BTN_SELECTOR,
-} from '../constants/test-selectors';
+} from '../constants/circle-selectors.ts';
 import {
   DEFAULT_BORDER_STYLE,
   CHANGING_BORDER_STYLE,
@@ -17,22 +15,25 @@ import { DELAY_IN_MS } from '../../src/constants/delays';
 import checkCirclesLength from '../utils/check-circles-length.ts';
 import { checkCircleBorderColor } from '../utils/check-circle-props';
 import { getCircleLetter } from '../utils/get-circle-props';
+import { createSelector } from '../utils/create-selector.ts';
 
 describe(`${CHECK.STRING}`, () => {
   beforeEach(() => {
     cy.visit('/recursion');
+    cy.get(createSelector('input-for-string')).as('input');
+    cy.get(createSelector('submit-button')).as('submit-btn');
   });
 
   it(`${CHECK.SUBMIT_DISABLE_IF_INPUT_IS_EMPTY}`, () => {
-    cy.get(INPUT_SELECTOR).should('be.empty');
-    cy.get(SUBMIT_BTN_SELECTOR).should('be.disabled');
+    cy.get('@input').should('be.empty');
+    cy.get('@submit-btn').should('be.disabled');
   });
 
   it(`${CHECK.STRING_REVERSE_IS_CORRECT}`, () => {
     cy.clock();
 
-    cy.get(INPUT_SELECTOR).type('cat');
-    cy.get(SUBMIT_BTN_SELECTOR).click();
+    cy.get('@input').type('cat');
+    cy.get('@submit-btn').click();
 
     cy.get(CIRCLES_SCHEME_SELECTOR)
       .children(CIRCLE_CONTAINER_SELECTOR)
@@ -108,6 +109,6 @@ describe(`${CHECK.STRING}`, () => {
       }
     });
 
-    cy.get(INPUT_SELECTOR).should('be.empty');
+    cy.get('@input').should('be.empty');
   });
 });

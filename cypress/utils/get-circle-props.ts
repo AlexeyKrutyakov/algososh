@@ -5,7 +5,7 @@ import {
   CIRCLE_LETTER_SELECTOR,
   CIRCLE_SELECTOR,
   CIRCLE_TAIL_SELECTOR,
-} from '../constants/test-selectors';
+} from '../constants/circle-selectors';
 
 export const getCircleLetter = (circle_container: any) => {
   return cy

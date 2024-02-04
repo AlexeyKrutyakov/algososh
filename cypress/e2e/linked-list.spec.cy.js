@@ -1,8 +1,5 @@
 import { CHECK } from '../constants/test-names';
 import {
-  ADD_BY_INDEX_BTN_SELECTOR,
-  ADD_TO_HEAD_BTN_SELECTOR,
-  ADD_TO_TAIL_BTN_SELECTOR,
   CIRCLES_SCHEME_SELECTOR,
   CIRCLE_ARTICLE_SELECTOR,
   CIRCLE_CONTAINER_SELECTOR,
@@ -10,12 +7,7 @@ import {
   CIRCLE_LETTER_SELECTOR,
   CIRCLE_SELECTOR,
   CIRCLE_TAIL_SELECTOR,
-  INPUT_FOR_INDEX_SELECTOR,
-  INPUT_SELECTOR,
-  REMOVE_BY_INDEX_BTN_SELECTOR,
-  REMOVE_FROM_HEAD_BTN_SELECTOR,
-  REMOVE_FROM_TAIL_BTN_SELECTOR,
-} from '../constants/test-selectors';
+} from '../constants/circle-selectors';
 
 import { DEFAULT_LINKED_LIST } from '../../src/constants/mock-data';
 import { SHORT_DELAY_IN_MS } from '../../src/constants/delays';
@@ -24,21 +16,26 @@ import {
   DEFAULT_BORDER_STYLE,
   MODIFIED_BORDER_STYLE,
 } from '../constants/styles';
+import { createSelector } from '../utils/create-selector';
 
 describe(`${CHECK.LIST_WORKS_CORRECTLY}`, () => {
   beforeEach(() => {
     cy.visit('/list');
     // aliases for inputs
-    cy.get(INPUT_SELECTOR).as('input-for-string');
-    cy.get(INPUT_FOR_INDEX_SELECTOR).as('input-for-index');
+    cy.get(createSelector('input-for-string')).as('input-for-string');
+    cy.get(createSelector('input-for-index')).as('input-for-index');
 
     // aliases for buttons
-    cy.get(ADD_TO_HEAD_BTN_SELECTOR).as('add-to-head-btn');
-    cy.get(ADD_TO_TAIL_BTN_SELECTOR).as('add-to-tail-btn');
-    cy.get(ADD_BY_INDEX_BTN_SELECTOR).as('add-by-index-btn');
-    cy.get(REMOVE_FROM_HEAD_BTN_SELECTOR).as('remove-from-head-btn');
-    cy.get(REMOVE_FROM_TAIL_BTN_SELECTOR).as('remove-from-tail-btn');
-    cy.get(REMOVE_BY_INDEX_BTN_SELECTOR).as('remove-by-index-btn');
+    cy.get(createSelector('add-to-head-button')).as('add-to-head-btn');
+    cy.get(createSelector('add-to-tail-button')).as('add-to-tail-btn');
+    cy.get(createSelector('add-by-index-button')).as('add-by-index-btn');
+    cy.get(createSelector('remove-from-head-button')).as(
+      'remove-from-head-btn'
+    );
+    cy.get(createSelector('remove-from-tail-button')).as(
+      'remove-from-tail-btn'
+    );
+    cy.get(createSelector('remove-by-index-button')).as('remove-by-index-btn');
 
     cy.get(CIRCLES_SCHEME_SELECTOR)
       .children(CIRCLE_ARTICLE_SELECTOR)
@@ -48,8 +45,8 @@ describe(`${CHECK.LIST_WORKS_CORRECTLY}`, () => {
 
   it(`${CHECK.BUTTONS_DISABLE_IF_INPUT_IS_EMPTY}`, () => {
     // check inputs
-    cy.get(INPUT_SELECTOR).should('be.empty');
-    cy.get(INPUT_FOR_INDEX_SELECTOR).should('be.empty');
+    cy.get('@input-for-string').should('be.empty');
+    cy.get('@input-for-index').should('be.empty');
 
     // check buttons
     cy.get('@add-to-head-btn').should('be.disabled');

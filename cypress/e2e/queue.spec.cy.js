@@ -7,14 +7,10 @@ import {
 } from '../constants/styles';
 import { CHECK } from '../constants/test-names';
 import {
-  ADD_BTN_SELECTOR,
   CIRCLES_SCHEME_SELECTOR,
   CIRCLE_CONTAINER_SELECTOR,
   CIRCLE_SELECTOR,
-  CLEAR_BTN_SELECTOR,
-  DELETE_BTN_SELECTOR,
-  INPUT_SELECTOR,
-} from '../constants/test-selectors';
+} from '../constants/circle-selectors';
 import { checkCircleBorderColor } from '../utils/check-circle-props';
 
 import checkCirclesLength from '../utils/check-circles-length';
@@ -23,20 +19,21 @@ import {
   getCircleLetter,
   getCircleTail,
 } from '../utils/get-circle-props';
+import { createSelector } from '../utils/create-selector';
 
 describe(`${CHECK.QUEUE_WORKS_CORRECTLY}`, () => {
   const addElement = (text) => {
     cy.get('@input').type(text);
-    cy.get('@add-button').click();
+    cy.get('@add-btn').click();
   };
 
   beforeEach(() => {
     cy.visit('/queue');
 
-    cy.get(ADD_BTN_SELECTOR).as('add-button');
-    cy.get(DELETE_BTN_SELECTOR).as('delete-button');
-    cy.get(CLEAR_BTN_SELECTOR).as('clear-button');
-    cy.get(INPUT_SELECTOR).as('input');
+    cy.get(createSelector('add-button')).as('add-btn');
+    cy.get(createSelector('delete-button')).as('delete-btn');
+    cy.get(createSelector('clear-button')).as('clear-btn');
+    cy.get(createSelector('input-for-string')).as('input');
 
     cy.clock();
 
@@ -56,9 +53,9 @@ describe(`${CHECK.QUEUE_WORKS_CORRECTLY}`, () => {
   });
 
   it(`${CHECK.BUTTONS_DISABLE_IF_INPUT_IS_EMPTY}`, () => {
-    cy.get(INPUT_SELECTOR).should('be.empty');
+    cy.get('@input').should('be.empty');
 
-    cy.get('[data-testid*="-button"]').each(($button) =>
+    cy.get('[data-cy*="-button"]').each(($button) =>
       cy.wrap($button).should('be.disabled')
     );
   });
@@ -66,9 +63,9 @@ describe(`${CHECK.QUEUE_WORKS_CORRECTLY}`, () => {
   it(`${CHECK.ADDING_TO_QUEUE_WORKS_CORRECTLY}`, () => {
     addElement('a');
 
-    cy.get('@add-button').should('be.disabled');
-    cy.get('@delete-button').should('be.disabled');
-    cy.get('@clear-button').should('be.disabled');
+    cy.get('@add-btn').should('be.disabled');
+    cy.get('@delete-btn').should('be.disabled');
+    cy.get('@clear-btn').should('be.disabled');
     cy.get('@input').should('be.disabled');
 
     checkCirclesLength('@circles_containers', 7);
@@ -118,7 +115,7 @@ describe(`${CHECK.QUEUE_WORKS_CORRECTLY}`, () => {
     addElement('b');
     cy.tick(SHORT_DELAY_IN_MS);
 
-    cy.get('@delete-button').click();
+    cy.get('@delete-btn').click();
 
     cy.get('@circles_containers').each(($circle_container, index) => {
       if (index === 0) {
@@ -159,7 +156,7 @@ describe(`${CHECK.QUEUE_WORKS_CORRECTLY}`, () => {
     addElement('b');
     cy.tick(SHORT_DELAY_IN_MS);
 
-    cy.get('@clear-button').click();
+    cy.get('@clear-btn').click();
 
     checkCirclesLength('@circles_containers', 7);
 

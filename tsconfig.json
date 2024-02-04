@@ -26,7 +26,7 @@
     "cypress/utils/check-circles-length.ts",
     "cypress/utils/check-circle-props.ts",
     "src/constants/mock-data.ts",
-    "cypress/constants/test-selectors.ts",
+    "cypress/constants/circle-selectors.ts",
     "cypress/constants/page-titles.ts",
     "cypress/constants/styles.ts"
   ]

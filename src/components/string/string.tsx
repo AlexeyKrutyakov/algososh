@@ -62,7 +62,7 @@ export const StringComponent: React.FC = () => {
         onSubmit={submitHandler}
       >
         <Input
-          data-testid="input-for-string"
+          data-cy="input-for-string"
           name="stringInput"
           maxLength={11}
           isLimitText={true}
@@ -72,7 +72,7 @@ export const StringComponent: React.FC = () => {
           disabled={isInputDisabled}
         />
         <Button
-          data-testid="submit-button"
+          data-cy="submit-button"
           isLoader={isLoading}
           text="Развернуть"
           type="submit"

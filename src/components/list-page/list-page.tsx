@@ -267,7 +267,7 @@ export const ListPage: React.FC = () => {
     <SolutionLayout title="Связный список">
       <nav className={styles.controls_value}>
         <Input
-          data-testid="input-for-string"
+          data-cy="input-for-string"
           extraClass={styles.input}
           placeholder="Введите значение"
           type="text"
@@ -278,7 +278,7 @@ export const ListPage: React.FC = () => {
           disabled={isDisabled}
         />
         <Button
-          data-testid="add-to-head-button"
+          data-cy="add-to-head-button"
           extraClass={styles.button_top}
           text="Добавить в head"
           onClick={addToHeadHandler}
@@ -286,7 +286,7 @@ export const ListPage: React.FC = () => {
           disabled={isDisabled || str === ''}
         />
         <Button
-          data-testid="add-to-tail-button"
+          data-cy="add-to-tail-button"
           extraClass={styles.button_top}
           text="Добавить в tail"
           onClick={addToTailHandler}
@@ -294,7 +294,7 @@ export const ListPage: React.FC = () => {
           disabled={isDisabled || str === ''}
         />
         <Button
-          data-testid="remove-from-head-button"
+          data-cy="remove-from-head-button"
           extraClass={styles.button_top}
           text="Удалить из head"
           onClick={removeFromHeadHandler}
@@ -302,7 +302,7 @@ export const ListPage: React.FC = () => {
           disabled={isDisabled || linkedList.getSize() <= linkedListMinSize}
         />
         <Button
-          data-testid="remove-from-tail-button"
+          data-cy="remove-from-tail-button"
           extraClass={styles.button_top}
           text="Удалить из tail"
           onClick={removeFromTailHandler}
@@ -312,7 +312,7 @@ export const ListPage: React.FC = () => {
       </nav>
       <nav className={styles.controls_index}>
         <Input
-          data-testid="input-for-index"
+          data-cy="input-for-index"
           extraClass={styles.input}
           placeholder="Введите индекс"
           type="number"
@@ -321,7 +321,7 @@ export const ListPage: React.FC = () => {
           disabled={isDisabled}
         />
         <Button
-          data-testid="add-by-index-button"
+          data-cy="add-by-index-button"
           extraClass={styles.button_bot}
           text="Добавить по индексу"
           onClick={addByIndexHandler}
@@ -335,7 +335,7 @@ export const ListPage: React.FC = () => {
           }
         />
         <Button
-          data-testid="remove-by-index-button"
+          data-cy="remove-by-index-button"
           extraClass={styles.button_bot}
           text="Удалить по индексу"
           onClick={removeByIndexHandler}
