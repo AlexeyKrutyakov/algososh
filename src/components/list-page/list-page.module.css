@@ -31,7 +31,7 @@
   width: 370px;
 }
 
-.article {
+.circle_article {
   display: flex;
   align-items: center;
   gap: 16px;

@@ -1,58 +1,107 @@
 import styles from './sorting-page.module.css';
 import React, { useEffect, useState } from 'react';
-import { SolutionLayout } from '../ui/solution-layout/solution-layout';
-import { RadioInput } from '../ui/radio-input/radio-input';
 import { Button } from '../ui/button/button';
-import { Direction } from '../../types/direction';
-import { delay } from '../../utils/delay';
 import { Column, ColumnProps } from '../ui/column/column';
+import { RadioInput } from '../ui/radio-input/radio-input';
+import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 import { SHORT_DELAY_IN_MS } from '../../constants/delays';
-import createRandomArr from '../../utils/create-random-arr';
-import sortBySelection from '../../utils/sort-by-selection';
-import { ElementStates } from '../../types/element-states';
-import sortByBubble from '../../utils/sort-by-bubble';
+import { Direction, ElementStates } from '../../types';
+import {
+  delay,
+  sortByBubble,
+  createRandomArr,
+  sortBySelection,
+} from '../../utils';
 
 export const SortingPage: React.FC = () => {
   const [isDisabled, setIsDisabled] = useState(false);
   const [isBubbleTypeActive, setIsBubbleTypeActive] = useState(false);
   const [isAscendSortingRunning, setIsAscendSortingRunning] = useState(false);
   const [isDescendSortingRunning, setIsDescendSortingRunning] = useState(false);
-  const [numbers, setNumbers] = useState<number[]>(
-    createRandomArr(3, 17, 1, 100)
-  );
+  const [numbers, setNumbers] = useState(createRandomArr(3, 17, 1, 100));
   const [columns, setColumns] = useState<ColumnProps[]>([]);
+  const [changingIndexList, setChangingIndexList] = useState<number[]>([]);
+  const [modifiedIndex, setModifiedIndex] = useState<number | null>(null);
 
-  const createDefaultColumns = (numbers: number[]): ColumnProps[] => {
+  const setColumnsColorAsDefault = (): void => {
+    setChangingIndexList([]);
+    setModifiedIndex(null);
+  };
+
+  const createColumnsFromArray = (arr: number[]): ColumnProps[] => {
     const columns: ColumnProps[] = [];
-    for (let i = 0; i < numbers.length; i++) {
+    for (let i = 0; i < arr.length; i++) {
       columns.push({
-        index: numbers[i],
-        state: ElementStates.Default,
+        index: arr[i],
       });
     }
     return columns;
   };
 
   const handleRadioChange = () => {
+    setColumnsColorAsDefault();
     setIsBubbleTypeActive(!isBubbleTypeActive);
   };
 
   const handleSortClick = async (direction: Direction) => {
-    if (direction === Direction.Ascending) setIsAscendSortingRunning(true);
-    if (direction === Direction.Descending) setIsDescendSortingRunning(true);
+    setColumnsColorAsDefault();
+
+    // block controls
+    if (direction === Direction.Ascending) {
+      setIsAscendSortingRunning(true);
+    } else {
+      setIsDescendSortingRunning(true);
+    }
     setIsDisabled(true);
 
-    !isBubbleTypeActive &&
-      (await sortBySelection(columns, setColumns, direction));
-    isBubbleTypeActive && (await sortByBubble(columns, setColumns, direction));
+    if (!isBubbleTypeActive) {
+      // sort by selection
+      let arr: number[] = numbers;
+      for (let i = 0; i < numbers.length; i++) {
+        // animation of one step sorting
+        for (let j = i + 1; j < numbers.length; j++) {
+          setChangingIndexList([i, j]);
 
-    if (direction === Direction.Ascending) setIsAscendSortingRunning(false);
-    if (direction === Direction.Descending) setIsDescendSortingRunning(false);
+          await delay(SHORT_DELAY_IN_MS);
+        }
+
+        // set numbers after one step sorting
+        arr = sortBySelection(arr, direction, i);
+        setNumbers(arr);
+
+        // paint columns
+        setChangingIndexList([i]);
+        setModifiedIndex(i);
+      }
+    } else {
+      // sort by bubble
+      let arr: number[] = numbers;
+      for (let i = numbers.length - 1; i >= 0; i--) {
+        for (let j = 0; j <= i - 1; j++) {
+          setChangingIndexList([j, j + 1]);
+          arr = sortByBubble(arr, direction, j);
+          setNumbers(arr);
+          await delay(SHORT_DELAY_IN_MS);
+        }
+        setModifiedIndex(i);
+      }
+      setNumbers(arr);
+    }
+
+    // unblock controls
+    if (direction === Direction.Ascending) {
+      setIsAscendSortingRunning(false);
+    } else {
+      setIsDescendSortingRunning(false);
+    }
     setIsDisabled(false);
   };
 
   const handleNewArrayClick = () => {
+    setColumnsColorAsDefault();
+
     setNumbers(createRandomArr(3, 17, 1, 100));
+    setColumns(createColumnsFromArray(numbers));
   };
 
   const wait = async () => {
@@ -62,7 +111,7 @@ export const SortingPage: React.FC = () => {
   };
 
   useEffect(() => {
-    setColumns(createDefaultColumns(numbers));
+    setColumns(createColumnsFromArray(numbers));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [numbers]);
 
@@ -113,9 +162,26 @@ export const SortingPage: React.FC = () => {
         </div>
       </nav>
       <div className={styles.scheme}>
-        {columns.map((column, ind) => (
-          <Column index={column.index} key={ind} state={column.state} />
-        ))}
+        {columns.length > 0 &&
+          columns.map((column, ind) => (
+            <Column
+              index={column.index}
+              key={ind}
+              state={
+                !isBubbleTypeActive
+                  ? modifiedIndex !== null && ind <= modifiedIndex
+                    ? ElementStates.Modified
+                    : changingIndexList.indexOf(ind) !== -1
+                    ? ElementStates.Changing
+                    : column.state
+                  : modifiedIndex !== null && ind >= modifiedIndex
+                  ? ElementStates.Modified
+                  : changingIndexList.indexOf(ind) !== -1
+                  ? ElementStates.Changing
+                  : column.state
+              }
+            />
+          ))}
       </div>
     </SolutionLayout>
   );

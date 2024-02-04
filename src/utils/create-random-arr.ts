@@ -1,6 +1,6 @@
 import getRandomValueFromRange from './get-random-value-in-range';
 
-export default function createRandomArr(
+export function createRandomArr(
   minLength: number,
   maxLength: number,
   minNumber: number,

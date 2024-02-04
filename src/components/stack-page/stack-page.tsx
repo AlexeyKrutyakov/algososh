@@ -47,7 +47,7 @@ export const StackPage: React.FC = () => {
     stack.push(str);
     setCircles(createCircles(stack));
 
-    renderAnimation(setActiveCircleState);
+    await renderAnimation(setActiveCircleState);
 
     setIsControlsDisabled(false);
     setIsAddingRunning(false);
@@ -61,7 +61,7 @@ export const StackPage: React.FC = () => {
     setIsDeletingRunning(true);
     setIsControlsDisabled(true);
 
-    renderAnimation(setActiveCircleState);
+    await renderAnimation(setActiveCircleState);
 
     // delete element
     stack.pop();
@@ -89,50 +89,53 @@ export const StackPage: React.FC = () => {
     <SolutionLayout title="Стек">
       <nav className={styles.controls}>
         <Input
+          data-cy="input-for-string"
           name="text"
           value={str}
           extraClass={styles.input}
           isLimitText={true}
           maxLength={4}
-          onChange={event => setStr(event.currentTarget.value)}
+          onChange={(event) => setStr(event.currentTarget.value)}
           disabled={isControlsDisabled}
         />
         <Button
+          data-cy="add-button"
           text="Добавить"
           onClick={addElement}
           isLoader={isAddingRunning}
           disabled={str === '' || isControlsDisabled}
         />
         <Button
+          data-cy="delete-button"
           text="Удалить"
           onClick={deleteElement}
           isLoader={isDeletingRunning}
           disabled={stack.getLength() === 0 || isControlsDisabled}
         />
         <Button
+          data-cy="clear-button"
           extraClass={styles.button_last}
           text="Очистить"
           onClick={clear}
           disabled={stack.getLength() === 0 || isControlsDisabled}
         />
       </nav>
-      <ul className={styles.scheme}>
+      <div className={styles.scheme}>
         {circles.length > 0 &&
           circles.map((element, index) => (
-            <li key={index}>
-              <Circle
-                letter={element.letter}
-                index={index}
-                head={index === circles.length - 1 ? 'top' : null}
-                state={
-                  index === circles.length - 1
-                    ? activeCircleState
-                    : ElementStates.Default
-                }
-              />
-            </li>
+            <Circle
+              letter={element.letter}
+              key={index}
+              index={index}
+              head={index === circles.length - 1 ? 'top' : null}
+              state={
+                index === circles.length - 1
+                  ? activeCircleState
+                  : ElementStates.Default
+              }
+            />
           ))}
-      </ul>
+      </div>
     </SolutionLayout>
   );
 };

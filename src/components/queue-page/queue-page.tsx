@@ -109,17 +109,19 @@ export const QueuePage: React.FC = () => {
     <SolutionLayout title="Очередь">
       <nav className={styles.controls}>
         <Input
+          data-cy="input-for-string"
           value={str}
           extraClass={styles.input}
           isLimitText={true}
           maxLength={4}
-          onChange={event => setStr(event.currentTarget.value)}
+          onChange={(event) => setStr(event.currentTarget.value)}
           disabled={
             (queue.getHead() !== null && queue.getTail() === null) ||
             isControlsDisabled
           }
         />
         <Button
+          data-cy="add-button"
           text="Добавить"
           onClick={addElement}
           isLoader={isAddingRunning}
@@ -130,12 +132,14 @@ export const QueuePage: React.FC = () => {
           }
         />
         <Button
+          data-cy="delete-button"
           text="Удалить"
           onClick={deleteElement}
           isLoader={isDeletingRunning}
           disabled={queue.getLength() === 0 || isControlsDisabled}
         />
         <Button
+          data-cy="clear-button"
           extraClass={styles.button_last}
           text="Очистить"
           onClick={clearQueue}
@@ -146,20 +150,19 @@ export const QueuePage: React.FC = () => {
           }
         />
       </nav>
-      <ul className={styles.scheme}>
+      <div className={styles.scheme}>
         {circles.length > 0 &&
           circles.map((element, index) => (
-            <li key={index}>
-              <Circle
-                letter={element.letter}
-                index={element.index}
-                head={index === queue.getHead() ? HEAD : ''}
-                tail={index === queue.getTail() ? TAIL : ''}
-                state={calculateState(index)}
-              />
-            </li>
+            <Circle
+              letter={element.letter}
+              key={index}
+              index={element.index}
+              head={index === queue.getHead() ? HEAD : ''}
+              tail={index === queue.getTail() ? TAIL : ''}
+              state={calculateState(index)}
+            />
           ))}
-      </ul>
+      </div>
     </SolutionLayout>
   );
 };

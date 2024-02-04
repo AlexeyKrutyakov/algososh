@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Рендеринг кнопки Заблокированная кнопка рендерится без ошибок 1`] = `
+<button
+  className="text text_type_button text_color_primary button undefined false "
+  disabled="true"
+  type="submit"
+>
+  <p
+    className="text undefined"
+  >
+    Развернуть
+  </p>
+</button>
+`;
+
+exports[`Рендеринг кнопки Кнопка без текста рендерится без ошибок 1`] = `
+<button
+  className="text text_type_button text_color_primary button undefined false "
+  type="submit"
+>
+  <p
+    className="text undefined"
+  >
+    Развернуть
+  </p>
+</button>
+`;
+
+exports[`Рендеринг кнопки Кнопка с индикацией загрузки рендерится без ошибок 1`] = `
+<button
+  className="text text_type_button text_color_primary button undefined loader "
+  disabled={true}
+  type="submit"
+>
+  <img
+    alt="Загрузка."
+    className="loader_icon"
+    src="loader.svg"
+  />
+</button>
+`;
+
+exports[`Рендеринг кнопки Кнопка с текстом рендерится без ошибок 1`] = `
+<button
+  className="text text_type_button text_color_primary button undefined false "
+  type="submit"
+>
+  <p
+    className="text undefined"
+  >
+    Развернуть
+  </p>
+</button>
+`;

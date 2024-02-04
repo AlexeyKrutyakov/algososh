@@ -30,7 +30,7 @@ export const FibonacciPage: React.FC = () => {
       const fibonacciNumber = calculateFibonacciNumber(i);
 
       await delay(SHORT_DELAY_IN_MS);
-      setfibonacciNumbers(fibonacciNumbers => [
+      setfibonacciNumbers((fibonacciNumbers) => [
         ...fibonacciNumbers,
         fibonacciNumber,
       ]);
@@ -57,21 +57,23 @@ export const FibonacciPage: React.FC = () => {
   return (
     <SolutionLayout title="Последовательность Фибоначчи">
       <form
-        action="reverseWord"
+        action="fibonacci"
         className={styles.form}
         onSubmit={submitHandler}
       >
         <Input
+          data-cy="input-for-string"
           name="stringInput"
           type="number"
           max={maxNumber}
           isLimitText={true}
           value={str}
           extraClass={styles.input}
-          onChange={event => setStr(event.currentTarget.value)}
+          onChange={(event) => setStr(event.currentTarget.value)}
           disabled={isInputDisabled}
         />
         <Button
+          data-cy="submit-button"
           isLoader={isLoading}
           text="Рассчитать"
           type="submit"
