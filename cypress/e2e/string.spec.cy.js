@@ -9,7 +9,6 @@ import {
   CHANGING_BORDER_STYLE,
   MODIFIED_BORDER_STYLE,
 } from '../constants/styles.ts';
-import { CHECK } from '../constants/test-names';
 import { DELAY_IN_MS } from '../../src/constants/delays';
 
 import checkCirclesLength from '../utils/check-circles-length.ts';
@@ -17,19 +16,19 @@ import { checkCircleBorderColor } from '../utils/check-circle-props';
 import { getCircleLetter } from '../utils/get-circle-props';
 import { createSelector } from '../utils/create-selector.ts';
 
-describe(`${CHECK.STRING}`, () => {
+describe('Проверка корректности работы разворота строки', () => {
   beforeEach(() => {
     cy.visit('/recursion');
     cy.get(createSelector('input-for-string')).as('input');
     cy.get(createSelector('submit-button')).as('submit-btn');
   });
 
-  it(`${CHECK.SUBMIT_DISABLE_IF_INPUT_IS_EMPTY}`, () => {
+  it('Если инпут не заполнен, кнопка "Submit" недоступна', () => {
     cy.get('@input').should('be.empty');
     cy.get('@submit-btn').should('be.disabled');
   });
 
-  it(`${CHECK.STRING_REVERSE_IS_CORRECT}`, () => {
+  it('Строка разворачивается корректно, анимация отрисовывается корректно', () => {
     cy.clock();
 
     cy.get('@input').type('cat');

@@ -1,4 +1,3 @@
-import { CHECK } from '../constants/test-names';
 import {
   CIRCLES_SCHEME_SELECTOR,
   CIRCLE_ARTICLE_SELECTOR,
@@ -18,7 +17,7 @@ import {
 } from '../constants/styles';
 import { createSelector } from '../utils/create-selector';
 
-describe(`${CHECK.LIST_WORKS_CORRECTLY}`, () => {
+describe('Проверка корректности работы связного списка', () => {
   beforeEach(() => {
     cy.visit('/list');
     // aliases for inputs
@@ -43,7 +42,7 @@ describe(`${CHECK.LIST_WORKS_CORRECTLY}`, () => {
       .as('circles_containers');
   });
 
-  it(`${CHECK.BUTTONS_DISABLE_IF_INPUT_IS_EMPTY}`, () => {
+  it('Если инпут не заполнен, кнопки управления недоступны', () => {
     // check inputs
     cy.get('@input-for-string').should('be.empty');
     cy.get('@input-for-index').should('be.empty');
@@ -57,7 +56,7 @@ describe(`${CHECK.LIST_WORKS_CORRECTLY}`, () => {
     cy.get('@remove-by-index-btn').should('be.disabled');
   });
 
-  it(`${CHECK.LIST_TEMPLATE_IS_CORRECT}`, () => {
+  it('Проверка корректности связного списка по умолчанию', () => {
     cy.get('@circles_containers')
       .children(CIRCLE_SELECTOR)
       .children(CIRCLE_LETTER_SELECTOR)
@@ -69,7 +68,7 @@ describe(`${CHECK.LIST_WORKS_CORRECTLY}`, () => {
       });
   });
 
-  it(`${CHECK.ADDING_TO_HEAD_OF_LINK_WORKS_CORRECTLY}`, () => {
+  it('Проверка корректности добавления элемента в начало списка', () => {
     cy.get('@input-for-string').type('-1');
     cy.get('@add-to-head-btn').click();
 
@@ -117,7 +116,7 @@ describe(`${CHECK.LIST_WORKS_CORRECTLY}`, () => {
       .should('have.css', 'border', DEFAULT_BORDER_STYLE);
   });
 
-  it(`${CHECK.ADDING_TO_TAIL_OF_LINK_WORKS_CORRECTLY}`, () => {
+  it('Проверка корректности добавления элемента в конец списка', () => {
     cy.get('@input-for-string').type('2');
     cy.get('@add-to-tail-btn').click();
 
@@ -173,7 +172,7 @@ describe(`${CHECK.LIST_WORKS_CORRECTLY}`, () => {
       .should('have.css', 'border', DEFAULT_BORDER_STYLE);
   });
 
-  it(`${CHECK.ADDING_TO_LINK_BY_INDEX_WORKS_CORRECTLY}`, () => {
+  it('Проверка корректности добавления элемента в список по индексу', () => {
     cy.get('@input-for-string').type('1');
     cy.get('@input-for-index').type('1');
     cy.get('@add-by-index-btn').click();
@@ -270,7 +269,7 @@ describe(`${CHECK.LIST_WORKS_CORRECTLY}`, () => {
     });
   });
 
-  it(`${CHECK.REMOVING_FROM_HEAD_OF_LINK_WORKS_CORRECTLY}`, () => {
+  it('Проверка корректности удаления элемента из начала списка', () => {
     cy.clock();
 
     cy.get('@remove-from-head-btn').click();
@@ -314,7 +313,7 @@ describe(`${CHECK.LIST_WORKS_CORRECTLY}`, () => {
       .should('be.empty');
   });
 
-  it(`${CHECK.REMOVING_FROM_TAIL_OF_LINK_WORKS_CORRECTLY}`, () => {
+  it('Проверка корректности удаления элемента из конца списка', () => {
     cy.clock();
 
     cy.get('@remove-from-tail-btn').click();
@@ -357,7 +356,7 @@ describe(`${CHECK.LIST_WORKS_CORRECTLY}`, () => {
       .should('have.text', 'tail');
   });
 
-  it(`${CHECK.REMOVING_FROM_LINK_BY_INDEX_WORKS_CORRECTLY}`, () => {
+  it('Проверка корректности удаления элемента из списка по индексу', () => {
     cy.clock();
 
     cy.get('@input-for-index').type('1');

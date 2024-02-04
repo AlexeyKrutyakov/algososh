@@ -12,8 +12,6 @@ import {
   CIRCLE_CONTAINER_SELECTOR,
 } from '../constants/circle-selectors';
 
-import { CHECK } from '../constants/test-names';
-
 import { checkCircleBorderColor } from '../utils/check-circle-props';
 
 import { getCircleLetter, getCircleHead } from '../utils/get-circle-props';
@@ -21,7 +19,7 @@ import { getCircleLetter, getCircleHead } from '../utils/get-circle-props';
 import checkCirclesLength from '../utils/check-circles-length';
 import { createSelector } from '../utils/create-selector';
 
-describe(`${CHECK.STACK_WORKS_CORRECTLY}`, () => {
+describe('Проверка корректности работы стека', () => {
   const addElement = (text) => {
     cy.get('@input').type(text);
     cy.get('@add-btn').click();
@@ -38,7 +36,7 @@ describe(`${CHECK.STACK_WORKS_CORRECTLY}`, () => {
     cy.clock();
   });
 
-  it(`${CHECK.BUTTONS_DISABLE_IF_INPUT_IS_EMPTY}`, () => {
+  it('Если инпут не заполнен, кнопки управления недоступны', () => {
     cy.get('@input').should('be.empty');
 
     cy.get('[data-cy*="-button"]').each(($button) =>
@@ -46,7 +44,7 @@ describe(`${CHECK.STACK_WORKS_CORRECTLY}`, () => {
     );
   });
 
-  it(`${CHECK.ADDING_TO_STACK_WORKS_CORRECTLY}`, () => {
+  it('Проверка корректности добавления элементов в стек', () => {
     addElement('1');
 
     cy.get('@add-btn').should('be.disabled');
@@ -96,7 +94,7 @@ describe(`${CHECK.STACK_WORKS_CORRECTLY}`, () => {
     });
   });
 
-  it(`${CHECK.REMOVING_FROM_STACK_WORKS_CORRECTLY}`, () => {
+  it('Проверка корректности удаления элементов из стека', () => {
     addElement('1');
 
     cy.tick(DELAY_IN_MS);
@@ -144,7 +142,7 @@ describe(`${CHECK.STACK_WORKS_CORRECTLY}`, () => {
     checkCirclesLength('@circles_containers', 0);
   });
 
-  it(`${CHECK.STACK_CLEARING_IS_WORKING_CORRECTLY}`, () => {
+  it('Проверка корректности очистки стека', () => {
     for (let i = 0; i < 3; i++) {
       addElement(`${i}`);
       cy.tick(SHORT_DELAY_IN_MS);

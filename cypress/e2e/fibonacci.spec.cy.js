@@ -6,25 +6,24 @@ import {
 } from '../constants/circle-selectors';
 import { SHORT_DELAY_IN_MS } from '../../src/constants/delays';
 import { FIBONACCI_ARRAY } from '../../src/constants/mock-data';
-import { CHECK } from '../constants/test-names';
 
 import checkCirclesLength from '../utils/check-circles-length';
 import { getCircleLetter } from '../utils/get-circle-props';
 import { createSelector } from '../utils/create-selector';
 
-describe(`${CHECK.FIBONACCI}`, () => {
+describe('Проверка корректности работы страницы "Последовательность Фибоначчи"', () => {
   beforeEach(() => {
     cy.visit('/fibonacci');
     cy.get(createSelector('input-for-string')).as('input');
     cy.get(createSelector('submit-button')).as('submit-btn');
   });
 
-  it(`${CHECK.SUBMIT_DISABLE_IF_INPUT_IS_EMPTY}`, () => {
+  it('Если инпут не заполнен, кнопка "Submit" недоступна', () => {
     cy.get('@input').should('be.empty');
     cy.get('@submit-btn').should('be.disabled');
   });
 
-  it(`${CHECK.FIBONACCI_SERIES_IS_CORRECT}`, () => {
+  it('Ряд Фибоначчи генерируется корректно', () => {
     cy.clock();
 
     cy.get('@input').type(`${FIBONACCI_ARRAY.length - 1}`);

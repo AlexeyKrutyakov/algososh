@@ -1,7 +1,5 @@
-import { CHECK } from '../constants/test-names';
-
-describe(`${CHECK.APP_IS_AVAILABLE}`, () => {
-  it(`${CHECK.LOCALHOST_AVAILABLE}`, () => {
+describe('Доступность приложения', () => {
+  it('должно быть доступно по адресу localhost:3000', () => {
     cy.visit('/');
   });
 });

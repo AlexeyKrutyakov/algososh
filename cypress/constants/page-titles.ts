@@ -1,4 +1,4 @@
-export const CARD_TITLE = {
+export const PAGE_TITLES = {
   STRING: 'Строка',
   FIBONACCI: 'Последовательность Фибоначчи',
   SORT_ARRAY: 'Сортировка массива',

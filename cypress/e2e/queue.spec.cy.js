@@ -5,7 +5,6 @@ import {
   CHANGING_BORDER_STYLE,
   DEFAULT_BORDER_STYLE,
 } from '../constants/styles';
-import { CHECK } from '../constants/test-names';
 import {
   CIRCLES_SCHEME_SELECTOR,
   CIRCLE_CONTAINER_SELECTOR,
@@ -21,7 +20,7 @@ import {
 } from '../utils/get-circle-props';
 import { createSelector } from '../utils/create-selector';
 
-describe(`${CHECK.QUEUE_WORKS_CORRECTLY}`, () => {
+describe('Проверка корректности работы очереди', () => {
   const addElement = (text) => {
     cy.get('@input').type(text);
     cy.get('@add-btn').click();
@@ -42,7 +41,7 @@ describe(`${CHECK.QUEUE_WORKS_CORRECTLY}`, () => {
       .as('circles_containers');
   });
 
-  it(`${CHECK.QUEUE_TEMPLATE_IS_CORRECT}`, () => {
+  it('Шаблон очереди корректен', () => {
     checkCirclesLength('@circles_containers', 7);
 
     cy.get('@circles_containers').each(($circle_container, index) => {
@@ -52,7 +51,7 @@ describe(`${CHECK.QUEUE_WORKS_CORRECTLY}`, () => {
     });
   });
 
-  it(`${CHECK.BUTTONS_DISABLE_IF_INPUT_IS_EMPTY}`, () => {
+  it('Если инпут не заполнен, кнопки управления недоступны', () => {
     cy.get('@input').should('be.empty');
 
     cy.get('[data-cy*="-button"]').each(($button) =>
@@ -60,7 +59,7 @@ describe(`${CHECK.QUEUE_WORKS_CORRECTLY}`, () => {
     );
   });
 
-  it(`${CHECK.ADDING_TO_QUEUE_WORKS_CORRECTLY}`, () => {
+  it('Проверка корректности добавления элементов в очередь', () => {
     addElement('a');
 
     cy.get('@add-btn').should('be.disabled');
@@ -109,7 +108,7 @@ describe(`${CHECK.QUEUE_WORKS_CORRECTLY}`, () => {
     });
   });
 
-  it(`${CHECK.REMOVING_FROM_QUEUE_WORKS_CORRECTLY}`, () => {
+  it('Проверка корректности удаления элементов из очереди', () => {
     addElement('a');
     cy.tick(SHORT_DELAY_IN_MS);
     addElement('b');
@@ -150,7 +149,7 @@ describe(`${CHECK.QUEUE_WORKS_CORRECTLY}`, () => {
     });
   });
 
-  it(`${CHECK.QUEUE_CLEARING_IS_WORKING_CORRECTLY}`, () => {
+  it('Проверка корректности очистки очереди', () => {
     addElement('a');
     cy.tick(SHORT_DELAY_IN_MS);
     addElement('b');
